@@ -2,6 +2,10 @@
   "name": "partner-gateway",
   "version": "1.0.0",
   "description": "",
+  "engines": {
+    "npm": ">=10.0.0",
+    "node": ">=22.0.0"
+  },
   "main": "index.js",
   "scripts": {
     "start": "node ./src/server.ts",
