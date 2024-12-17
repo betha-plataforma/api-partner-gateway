@@ -1,0 +1,10 @@
+# package directories
+node_modules
+dist
+
+# Idea
+.idea
+
+# Jest
+coverage
+jest.config.js
