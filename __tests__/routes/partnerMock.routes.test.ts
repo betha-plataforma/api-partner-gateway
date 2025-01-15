@@ -5,7 +5,7 @@ import app from "../../src/app";
 describe("Partner Mock routes", () => {
 
     test("Get Partner Mock auth should be ok", async () => {
-        const res = await request(app).get("/auth");
+        const res = await request(app).get("/partner/auth");
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
             "data": {
@@ -16,7 +16,7 @@ describe("Partner Mock routes", () => {
     });
 
     test("Get Application 1 should require a token", async () => {
-        const res = await request(app).get("/application1");
+        const res = await request(app).get("/partner/application1");
         expect(res.status).toBe(401);
         expect(res.body).toEqual({
             "message": "Unauthorized"
@@ -24,7 +24,7 @@ describe("Partner Mock routes", () => {
     });
 
     test("Get Application 1 with token should be ok", async () => {
-        const res = await request(app).get("/application1").set("Authorization", "dalsjkdnhçalkfjaçlksfjdçalkjf");
+        const res = await request(app).get("/partner/application1").set("Authorization", "dalsjkdnhçalkfjaçlksfjdçalkjf");
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
             "message": "Welcome to Application 1"
