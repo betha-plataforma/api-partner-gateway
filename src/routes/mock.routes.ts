@@ -9,7 +9,7 @@ interface ErrorResponse {
     errorCode?: string;
 }
 
-router.get("/redirect-to-application1-trigger", async (_req: Request, res: Response): Promise<void> => {
+router.get("/betha/redirect-to-application1-trigger", async (_req: Request, res: Response): Promise<void> => {
     const jwtToken = "test_jwt_token"; // Replace with actual JWT generation or retrieval logic
 
     try {
@@ -51,6 +51,28 @@ router.get("/redirect-to-application1-trigger", async (_req: Request, res: Respo
             res.status(500).json(errorResponse);
         }
     }
+});
+
+router.get("/partner/auth", (_req: Request, res: Response): void => {
+    res.status(200).json({
+        "data": {
+            "token": "dalsjkdnhçalkfjaçlksfjdçalkjf",
+            "uri_redirect": "http://localhost:3000/application1"
+        }
+    });
+});
+
+router.get("/partner/application1", (req: Request, res: Response): void => {
+
+    if (req.headers.authorization !== "dalsjkdnhçalkfjaçlksfjdçalkjf") {
+        res.status(401).json({
+            "message": "Unauthorized"
+        });
+    }
+
+    res.status(200).json({
+        "message": "Welcome to Application 1"
+    });
 });
 
 export { router };
