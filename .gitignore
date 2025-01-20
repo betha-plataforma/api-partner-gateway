@@ -1,10 +1,38 @@
-# package directories
-node_modules
-dist
+lib-cov
+*.seed
+*.log
+*.csv
+*.dat
+*.out
+*.pid
+*.gz
+*.swp
 
-# Idea
-.idea
+pids
+logs
+results
+tmp
 
-# Jest
+# Coverage reports
 coverage
-jest.config.js
+
+# API keys and secrets
+.env
+
+# Dependency directory
+node_modules
+bower_components
+
+# Editors
+.idea
+*.iml
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Ignore built ts files
+dist/**/*
+
+# ignore yarn.lock
+yarn.lock
