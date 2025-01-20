@@ -25,9 +25,6 @@ router.get("/betha/redirect-to-application1-trigger", async (_req: Request, res:
             },
         );
 
-        console.log('Response data:', JSON.stringify(data, null, 4));
-        console.log('Response status:', status);
-
         res.status(status).json(data);
     } catch (error) {
         let errorResponse: ErrorResponse;
@@ -40,14 +37,12 @@ router.get("/betha/redirect-to-application1-trigger", async (_req: Request, res:
                 errorCode: 'UNKNOWN_ERROR'
             };
 
-            console.error('Axios error:', errorResponse);
             res.status(axiosError.response?.status || 500).json(errorResponse);
         } else {
             errorResponse = {
                 message: 'An unexpected error occurred',
                 errorCode: 'INTERNAL_ERROR'
             };
-            console.error('Unexpected error:', errorResponse);
             res.status(500).json(errorResponse);
         }
     }

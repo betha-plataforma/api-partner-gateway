@@ -1,6 +1,8 @@
 import request from "supertest";
 import * as jose from "node-jose";
 import app from "../../src/app";
+import { GatewayController } from "../../src/gateway/gateway.cotroller";
+import { jest } from "@jest/globals";
 
 /**
  * Tests for the gateway routes.
@@ -15,6 +17,13 @@ describe("Gateway routes", () => {
     beforeAll(async () => {
         keystore = jose.JWK.createKeyStore();
         key = await keystore.generate("oct", 256, { alg: "HS256", use: "sig" });
+    });
+
+    /**
+     * Reset the mocks after each test.
+     */
+    afterEach(() => {
+        jest.restoreAllMocks();
     });
 
     test("Get gateway", async () => {
@@ -74,5 +83,18 @@ describe("Gateway routes", () => {
                 }
             ]
         });
+    });
+
+    test("Handles unexpected errors gracefully", async () => {
+        jest.spyOn(GatewayController.prototype, "auth").mockImplementationOnce(function () {
+            throw new Error("Unexpected server error");
+        });
+
+        const res = await request(app)
+            .post("/partner-gateway/v1/auth")
+            .send({ token: "valid-token" });
+
+        expect(res.status).toBe(500);
+        expect(res.body).toEqual({});
     });
 });

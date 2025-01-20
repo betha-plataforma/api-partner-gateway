@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
-import { body, check, validationResult } from "express-validator";
+import { check, validationResult } from "express-validator";
+import { GatewayValidationException } from "./gateway.errors";
 
 /**
  * Controller class for handling gateway-related functionality.
@@ -26,27 +27,31 @@ class GatewayController {
      * Authenticates and redirects the user to the application.
      */
     public async auth(): Promise<void> {
-        await check("token", "Invalid JWT token").exists().isJWT().run(this.req);
-        if (!this.handleValidationErrors()) return;
+        try {
+            await check("token", "Invalid JWT token").exists().isJWT().run(this.req);
+            this.handleValidationErrors();
 
-        this.res.status(200).send("redirected");
+            this.res.status(200).send("redirected");
+        } catch (error) {
+            if (error instanceof GatewayValidationException) {
+                this.res.status(error.statusCode).json({ errors: error.errors });
+            } else {
+                this.res.status(500).json({ message: "Internal server error" });
+            }
+        }
     }
 
     /**
-     * Validates the request and handles errors.
-     * If there are validation errors, it sends a 422 response.
-     *
-     * @returns {boolean} Returns `true` if no validation errors, `false` otherwise.
+     * Validates the request.
+     * 
+     * @throws {ValidationException} When validation errors are present in the request.
      */
-    private handleValidationErrors(): boolean {
+    private handleValidationErrors(): void {
         const errors = validationResult(this.req);
 
         if (!errors.isEmpty()) {
-            this.res.status(422).json({ errors: errors.array() });
-            return false;
+            throw new GatewayValidationException("Validation failed", errors.array());
         }
-
-        return true;
     }
 }
 
