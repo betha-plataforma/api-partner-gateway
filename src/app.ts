@@ -1,6 +1,6 @@
-import express, { Application, Request, Response, NextFunction } from "express";
+import express, { Application, Request, Response } from "express";
 
-import { router as gatewayRoutes } from "./routes/gateway.routes";
+import { router as gatewayRoutes } from "./gateway/gateway.routes";
 import { router as mockRoutes } from "./routes/mock.routes";
 
 const app: Application = express();
@@ -15,7 +15,7 @@ app.use("/partner-gateway/v1", gatewayRoutes);
 app.use("/mock", mockRoutes);
 
 // Health Check
-app.use("/alive", (_req: Request, res: Response, _next: NextFunction): void => {
+app.use("/alive", (_req: Request, res: Response): void => {
     res.status(200).send("yes");
 });
 

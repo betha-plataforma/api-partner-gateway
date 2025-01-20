@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { GatewayController } from "../gateway/gateway.cotroller";
+import { GatewayController } from "./gateway.cotroller";
 
 const router = Router();
 
