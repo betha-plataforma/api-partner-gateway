@@ -9,7 +9,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./src/server.ts",
-    "test": "jest",
+    "test": "jest --bail",
     "jest": "npx jest --watchAll",
     "dev": "nodemon ./src/server.ts",
     "build": "tsc"
@@ -19,7 +19,9 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^1.7.9",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "express-validator": "^7.2.1",
+    "node-jose": "^2.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",
@@ -28,6 +30,7 @@
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.10.2",
+    "@types/node-jose": "^1.1.13",
     "@types/supertest": "^6.0.2",
     "babel-jest": "^29.7.0",
     "jest": "^29.7.0",
