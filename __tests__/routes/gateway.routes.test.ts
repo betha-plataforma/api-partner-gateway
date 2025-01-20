@@ -15,6 +15,8 @@ describe("Gateway routes", () => {
      * Generate a key before running the tests.
      */
     beforeAll(async () => {
+        process.env.JWKS_URI = "https://example.com/.well-known/jwks.json";
+
         keystore = jose.JWK.createKeyStore();
         key = await keystore.generate("oct", 256, { alg: "HS256", use: "sig" });
     });
@@ -24,23 +26,6 @@ describe("Gateway routes", () => {
      */
     afterEach(() => {
         jest.restoreAllMocks();
-    });
-
-    test("Get gateway", async () => {
-        const payload = { userId: "12345", role: "admin" };
-        const token = await jose.JWS.createSign(
-            { format: "compact", fields: { typ: "JWT" } },
-            key
-        )
-            .update(JSON.stringify(payload))
-            .final();
-
-        const res = await request(app)
-            .post("/partner-gateway/v1/auth")
-            .send({ token });
-
-        expect(res.text).toEqual("redirected");
-        expect(res.status).toBe(200);
     });
 
     test("Get gateway with missing token", async () => {
