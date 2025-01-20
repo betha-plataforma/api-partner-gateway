@@ -1,5 +1,15 @@
 import app from "./app";
 
-const PORT: Number = 3000;
+/**
+ * Start Express server.
+ */
+const server = app.listen(app.get("port"), () => {
+    console.log(
+        "  App is running at http://localhost:%d in %s mode",
+        app.get("port"),
+        app.get("env")
+    );
+    console.log("  Press CTRL-C to stop\n");
+});
 
-app.listen(PORT, (): void => console.log(`running on port ${PORT}`));
+export default server;
