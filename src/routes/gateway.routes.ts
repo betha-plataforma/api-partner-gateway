@@ -1,9 +1,13 @@
 import { Router, Request, Response } from "express";
+import { GatewayController } from "../gateway/gateway.cotroller";
 
 const router = Router();
 
-router.post("/auth", (_req: Request, res: Response): void => {
-    res.status(200).send("redirected");
-});
+/**
+ * Routes for the gateway
+ */
+router.post("/auth", (req: Request, res: Response) =>
+    new GatewayController(req, res).auth()
+);
 
 export { router };
