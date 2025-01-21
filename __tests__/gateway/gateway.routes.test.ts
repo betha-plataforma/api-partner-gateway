@@ -15,8 +15,6 @@ describe("Gateway routes", () => {
      * Generate a key before running the tests.
      */
     beforeAll(async () => {
-        process.env.JWKS_URI = "https://example.com/.well-known/jwks.json";
-
         keystore = jose.JWK.createKeyStore();
         key = await keystore.generate("oct", 256, { alg: "HS256", use: "sig" });
     });

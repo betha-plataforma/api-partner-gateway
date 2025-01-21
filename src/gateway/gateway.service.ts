@@ -1,6 +1,18 @@
 import jwksRsa from "jwks-rsa";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { InvalidTokenException } from "./gateway.errors";
+import { envs } from "../configs"
+
+interface PartnerCredentials {
+    clientId: string;
+    clientSecret: string;
+}
+
+interface RequestContext {
+    database: string;
+    entity: string;
+    system: string;
+}
 
 /**
  * The GatewayService class provides methods for authenticating requests to the
@@ -8,7 +20,7 @@ import { InvalidTokenException } from "./gateway.errors";
  */
 class GatewayService {
     private jwksClient: jwksRsa.JwksClient;
-    private jwksUri: string | undefined = process.env.JWKS_URI;
+    private jwksUri: string = envs?.JWKS_URI ?? "";
 
     /**
      * Constructor for the GatewayService class.
@@ -26,13 +38,34 @@ class GatewayService {
     }
 
     /**
+     * Authenticates the request with the given context from the JWT on the partnet service.
+     * 
+     * @param token - The JWT to validate.
+     * @returns A promise that resolves to the decoded JWT payload if valid.
+     */
+    public async auth(token: string): Promise<PartnerCredentials> {
+        // TODO: get the claims from the JWT = context
+        const jwtPayload = await this.validatesJwt(token);
+        const context = jwtPayload.context as RequestContext;
+
+        // TODO: call the partner service with the context
+        // and get the credentials
+        const credentials = {
+            clientId: jwtPayload.clientId,
+            clientSecret: jwtPayload.clientSecret
+        };
+
+        return credentials;
+    }
+
+    /**
      * Authenticates the request by validating the JWT.
      *
      * @param token - The JWT to validate.
      * @returns A promise that resolves to the decoded JWT payload if valid.
      * @throws An error if the token is invalid or cannot be verified.
      */
-    public async auth(token: string): Promise<JwtPayload> {
+    public async validatesJwt(token: string): Promise<JwtPayload> {
         try {
             const decodedHeader = jwt.decode(token, { complete: true });
 
@@ -49,7 +82,7 @@ class GatewayService {
 
             return payload;
         } catch (error) {
-            throw new InvalidTokenException("JWT validation failed", error);
+            throw new InvalidTokenException("JWT validation failed");
         }
     }
 }

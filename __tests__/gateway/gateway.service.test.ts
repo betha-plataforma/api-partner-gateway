@@ -12,7 +12,6 @@ describe("GatewayService", () => {
     };
 
     beforeAll(() => {
-        process.env.JWKS_URI = "https://example.com/.well-known/jwks.json";
         (jwksRsa as unknown as jest.Mock).mockImplementation(() => mockJwksClient);
     });
 

@@ -2,9 +2,9 @@ import 'source-map-support/register';
 
 export class InvalidTokenException extends Error {
     public statusCode: number;
-    public errors: any;
+    public errors?: any;
 
-    constructor(message: string, errors: any) {
+    constructor(message: string, errors?: any) {
         super(message);
         this.statusCode = 401;
         this.errors = errors;
@@ -13,9 +13,9 @@ export class InvalidTokenException extends Error {
 
 export class GatewayValidationException extends Error {
     public statusCode: number;
-    public errors: any;
+    public errors?: any;
 
-    constructor(message: string, errors: any) {
+    constructor(message: string, errors?: any) {
         super(message);
         this.statusCode = 422;
         this.errors = errors;
