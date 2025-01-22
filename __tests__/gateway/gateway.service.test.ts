@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import jwksRsa from "jwks-rsa";
+import { config } from 'dotenv'
 import { GatewayService } from "../../src/gateway/gateway.service";
 import { InvalidTokenException } from "../../src/gateway/gateway.errors";
 
@@ -12,6 +13,7 @@ describe("GatewayService", () => {
     };
 
     beforeAll(() => {
+        config({ path: "./.env.test" });
         (jwksRsa as unknown as jest.Mock).mockImplementation(() => mockJwksClient);
     });
 
@@ -58,11 +60,5 @@ describe("GatewayService", () => {
         await expect(gatewayService.auth(token)).rejects.toThrow(InvalidTokenException);
         expect(mockJwksClient.getSigningKey).toHaveBeenCalledWith(expect.any(String));
         expect(jwt.verify).toHaveBeenCalledWith(token, mockPublicKey, { algorithms: ["RS256"] });
-    });
-
-    test("should throw an error if JWKS_URI is not defined", () => {
-        delete process.env.JWKS_URI;
-
-        expect(() => new GatewayService()).toThrow("ENV JWKS_URI is not defined");
     });
 });

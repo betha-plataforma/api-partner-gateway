@@ -1,7 +1,6 @@
 import jwksRsa from "jwks-rsa";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { InvalidTokenException } from "./gateway.errors";
-import { envs } from "../configs"
 
 interface PartnerCredentials {
     clientId: string;
@@ -20,12 +19,13 @@ interface RequestContext {
  */
 class GatewayService {
     private jwksClient: jwksRsa.JwksClient;
-    private jwksUri: string = envs?.JWKS_URI ?? "";
+    private jwksUri: string = process.env.JWKS_URI as string;
 
     /**
      * Constructor for the GatewayService class.
      */
     constructor() {
+        console.log("JWKS_URI", process.env.JWKS_URI);
         if (!this.jwksUri) throw new Error("ENV JWKS_URI is not defined");
 
         const jwksUri = this.jwksUri;

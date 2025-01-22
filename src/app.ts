@@ -1,4 +1,5 @@
 import express, { Application, Request, Response } from "express";
+import { } from "./configs";
 
 import { router as gatewayRoutes } from "./gateway/gateway.routes";
 import { router as mockRoutes } from "./routes/mock.routes";
