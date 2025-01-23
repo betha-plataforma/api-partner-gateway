@@ -8,6 +8,7 @@ import { GatewayService } from "./gateway.service";
  * 
  * @param req The request object.
  * @param res The response object.
+ * @param gatewayService The gateway service.
  */
 class GatewayController {
     private req: Request;

@@ -18,13 +18,12 @@ switch (process.env.NODE_ENV) {
         throw new Error(`'NODE_ENV' ${process.env.NODE_ENV} is not handled!`)
 }
 
-console.log("ENVS carregadas", process.env.NODE_ENV)
-
 declare global {
     namespace NodeJS {
         interface ProcessEnv {
             PORT: string;
             JWKS_URI: string;
+            PARTNER_AUTH_URI: string;
         }
     }
 }

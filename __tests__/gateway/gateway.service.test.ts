@@ -1,8 +1,11 @@
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import jwksRsa from "jwks-rsa";
-import { config } from 'dotenv'
+import { config } from "dotenv";
 import { GatewayService } from "../../src/gateway/gateway.service";
 import { InvalidTokenException } from "../../src/gateway/gateway.errors";
+import { PartnerService } from "../../src/partner/partner.service";
+import { PartnerCredentials } from "../../src/partner/partner-credentials.interface";
+import { RequestContext } from "../../src/gateway/request-context.interface";
 
 jest.mock("jwks-rsa");
 jest.mock("jsonwebtoken");
@@ -21,9 +24,18 @@ describe("GatewayService", () => {
         jest.clearAllMocks();
     });
 
-    test("should validate a JWT successfully", async () => {
+    test("should validate a JWT successfully and return partner credentials", async () => {
         const mockPublicKey = "mock-public-key";
-        const mockPayload = { userId: "12345", role: "admin" };
+        const mockJwtPayload: JwtPayload = {
+            userId: "12345",
+            role: "admin",
+            context: { database: '1', entity: '1', system: '1' } as RequestContext
+        };
+
+        const mockCredentials: PartnerCredentials = {
+            clientId: "partner-client-id",
+            clientSecret: "partner-client-secret"
+        };
 
         const token = "header.payload.signature";
         const decodedHeader = { kid: "test-kid", alg: "RS256" };
@@ -33,17 +45,21 @@ describe("GatewayService", () => {
         });
 
         (jwt.decode as jest.Mock).mockReturnValue({ header: decodedHeader });
-        (jwt.verify as jest.Mock).mockImplementation(() => mockPayload);
+        (jwt.verify as jest.Mock).mockReturnValue(mockJwtPayload);
 
-        const gatewayService = new GatewayService();
+        const partnerService = new PartnerService();
+        jest.spyOn(partnerService, "getPartnerCredentials").mockResolvedValue(mockCredentials);
+
+        const gatewayService = new GatewayService(partnerService);
         const result = await gatewayService.auth(token);
 
-        expect(result).toEqual(mockPayload);
+        expect(result).toEqual(mockCredentials);
         expect(mockJwksClient.getSigningKey).toHaveBeenCalledWith("test-kid");
         expect(jwt.verify).toHaveBeenCalledWith(token, mockPublicKey, { algorithms: ["RS256"] });
+        expect(partnerService.getPartnerCredentials).toHaveBeenCalledWith(mockJwtPayload.context);
     });
 
-    test("should throw TokenValidationException on invalid JWT", async () => {
+    test("should throw InvalidTokenException on invalid JWT", async () => {
         const mockPublicKey = "mock-public-key";
 
         mockJwksClient.getSigningKey.mockResolvedValue({
@@ -54,7 +70,8 @@ describe("GatewayService", () => {
             throw new Error("Invalid JWT");
         });
 
-        const gatewayService = new GatewayService();
+        const partnerService = new PartnerService();
+        const gatewayService = new GatewayService(partnerService);
         const token = "mock-jwt-token";
 
         await expect(gatewayService.auth(token)).rejects.toThrow(InvalidTokenException);
