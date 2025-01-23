@@ -1,10 +1,13 @@
 import express, { Application, Request, Response } from "express";
-import { } from "./configs";
+import { loadEnvironmentConfig } from "./configs";
 
 import { router as gatewayRoutes } from "./gateway/gateway.routes";
 import { router as mockRoutes } from "./routes/mock.routes";
 
 const app: Application = express();
+
+// load environment variables
+loadEnvironmentConfig();
 
 // Express configuration
 app.set("port", process.env.PORT || 3000);
