@@ -54,12 +54,7 @@ class PartnerService {
             }
             return response.json();
         }).then(data => {
-            const credentials: PartnerCredentials = {
-                clientId: data.clientId,
-                clientSecret: data.clientSecret
-            };
-
-            return credentials;
+            return data as PartnerCredentials;
         }).catch(error => {
             if (error instanceof
                 PartnerClientErrorException ||

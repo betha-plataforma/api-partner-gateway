@@ -1,3 +1,4 @@
+// TODO: define a standard custom exception
 export class PartnerClientErrorException extends Error {
     public statusCode: number;
 

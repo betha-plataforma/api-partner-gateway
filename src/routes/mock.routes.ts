@@ -1,13 +1,7 @@
 import { Router, Request, Response } from "express";
-import axios, { AxiosError } from "axios";
+import AppConstants from "../app-constants";
 
 const router = Router();
-
-interface ErrorResponse {
-    message: string;
-    details?: unknown;
-    errorCode?: string;
-}
 
 router.get("/betha/redirect-to-application1-trigger", async (_req: Request, res: Response): Promise<void> => {
     const jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
@@ -17,7 +11,7 @@ router.get("/betha/redirect-to-application1-trigger", async (_req: Request, res:
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
-                'Authorization': `Bearer ${jwtToken}`,
+                [AppConstants.BTH_GATEWAY_ID_HEADER]: jwtToken,
             },
             body: JSON.stringify({})
         });
@@ -26,7 +20,6 @@ router.get("/betha/redirect-to-application1-trigger", async (_req: Request, res:
 
         res.status(response.status).json(data);
     } catch (error) {
-        console.error("Error occurred:", error);
         res.status(500).json({ message: "An error occurred while processing the request." });
     }
 });

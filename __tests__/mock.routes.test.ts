@@ -1,6 +1,8 @@
 import request from "supertest";
 import app from "../src/app";
 
+const jwt = '';
+
 describe("Partner Mock routes", () => {
 
     test("Get Partner Mock auth should be ok", async () => {
@@ -35,9 +37,9 @@ describe("Betha Mock routes", () => {
     it("should successfully call the mock/betha/redirect-to-application1-trigger endpoint", async () => {
         const response = await request(app)
             .get("/mock/betha/redirect-to-application1-trigger")
-            .set("Authorization", "Bearer test_jwt_token");
+            .set("Authorization", "Bearer " + jwt);
 
-        expect(response.body).toEqual({ message: "Authorized successfully" });
+        expect(response.body).toEqual('redirected');
         expect(response.status).toBe(200);
     });
 });

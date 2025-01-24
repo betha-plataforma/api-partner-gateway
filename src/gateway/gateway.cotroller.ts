@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { check, validationResult } from "express-validator";
 import { GatewayValidationException, InvalidTokenException } from "./gateway.errors";
 import { GatewayService } from "./gateway.service";
+import AppConstants from "../app-constants";
 
 /**
  * Controller class for handling gateway-related functionality.
@@ -32,18 +33,21 @@ class GatewayController {
      */
     public async auth(): Promise<void> {
         try {
-            await check("token", "Invalid JWT token").exists().isJWT().run(this.req);
+            await check(AppConstants.BTH_GATEWAY_ID_HEADER, "Invalid JWT token")
+                .exists().isJWT().run(this.req);
             this.handleValidationErrors();
 
-            await this.gatewayService.auth(this.req.body.token);
+            await this.gatewayService.auth(this.req);
 
             this.res.status(200).send("redirected");
         } catch (error) {
+            // TODO: Log the error with a logger
+            console.error(error);
             if (
                 error instanceof GatewayValidationException ||
                 error instanceof InvalidTokenException
             ) {
-                this.res.status(error.statusCode).json({ errors: error.errors });
+                this.res.status(error.statusCode).json({ errors: error });
             } else {
                 this.res.status(500).json({ message: "Internal server error" });
             }

@@ -1,4 +1,4 @@
 export interface PartnerCredentials {
-    clientId: string;
-    clientSecret: string;
+    uriRedirect: string;
+    token: string;
 }
