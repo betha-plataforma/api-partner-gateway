@@ -1,0 +1,18 @@
+include: "https://infra.gitlab.services.betha.cloud/ci-templates/v2/auto-devops.yaml"
+
+variables:
+  # NODE_IMAGE: "node:18.20"
+  APPNAME: "api-partner-gateway"
+  TEAM_NAME: "aplicacoes"
+  # SUBDOMAIN_PREFIX: 'aplicacoes.studio'
+  BUILD_TYPE: "node"
+  HELM_CHART: 'betha/nginx'
+  CHART_VERSION: '2.0'
+
+  # Build imagem multi arquitetura
+  # DOCKER_IMAGE_MULTI_ARCH: "true"
+
+compile-node:
+  script:
+    - npm i
+    # - yarn build
