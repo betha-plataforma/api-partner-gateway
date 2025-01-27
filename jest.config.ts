@@ -1,5 +1,6 @@
 import type { Config } from 'jest';
-import { } from "./src/configs";
+
+process.env.NODE_ENV = 'test';
 
 export default async (): Promise<Config> => {
   return {

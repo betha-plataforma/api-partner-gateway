@@ -9,7 +9,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./src/server.ts",
-    "test": "jest --bail --detectOpenHandles",
+    "test": "jest --bail --coverage",
     "jest": "npx jest --watchAll",
     "dev": "NODE_ENV=development nodemon -r dotenv/config ./src/server.ts dotenv_config_path=.env.development",
     "build": "tsc"

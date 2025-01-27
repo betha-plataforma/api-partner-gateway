@@ -2,8 +2,8 @@ import { createClient, RedisClientType } from 'redis';
 
 let redisClient: RedisClientType | null = null;
 
-export const getRedisClient = (): RedisClientType => {
-    if (!redisClient) {
+export const getRedisClient = (): RedisClientType | null => {
+    if (!redisClient && process.env.NODE_ENV != 'test') {
         redisClient = createClient({
             url: process.env.REDIS_URL,
         });
