@@ -1,4 +1,5 @@
 export interface PartnerCredentials {
     uriRedirect: string;
-    token: string;
+    method: string;
+    headers: Record<string, string>;
 }

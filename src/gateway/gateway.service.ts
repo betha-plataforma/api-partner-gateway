@@ -4,8 +4,6 @@ import { InvalidTokenException } from "./gateway.errors";
 import { RequestContext } from "./request-context.interface";
 import { PartnerCredentials } from "../partner/partner-credentials.interface";
 import { PartnerService } from "../partner/partner.service";
-import { Request } from "express";
-import AppConstants from "../app-constants";
 import { BthJwtPayload } from "./bth-jwt-payload.interface";
 
 /**
@@ -26,61 +24,43 @@ class GatewayService {
         this.partnerService = partnerService;
         this.jwksClient = jwksRsa({
             jwksUri,
-            cache: true, // Caches the signing key
-            cacheMaxEntries: 5, // Maximum number of keys to cache
-            cacheMaxAge: 600000 // Cache duration in milliseconds
+            // TODO: check if its necessary to cache the keys on redis
+            cache: true,
+            cacheMaxEntries: 3,
+            cacheMaxAge: 172800000 // Cache duration in milliseconds (48 hours)
         });
     }
 
     /**
-     * Authenticates the request by extracting the JWT payload from the request headers,
-     * constructs a request context, and retrieves partner credentials using the partner service.
+     * Authenticates the request with the given JWT token on the JWKS endpoint,
+     * and returns the partner credentials from the partner auth service.
      *
-     * @param req - The incoming request object containing headers and other request data.
+     * @param token - The JWT token from the request headers.
      * @returns A promise that resolves to the partner credentials.
-     *
-     * @throws Will throw an error if the JWT payload cannot be retrieved or if the partner service fails.
+     * @throws An error if the token is invalid or cannot be verified.
      */
     // TODO: Change the return type to the response object of the partner product
     // public async auth(req: Request): Promise<Response> {
-    public async auth(req: Request): Promise<PartnerCredentials> {
-        const jwtPayload: BthJwtPayload = await this.getJwtPayload(
-            req.header(AppConstants.BTH_GATEWAY_ID_HEADER) as string
-        ) as BthJwtPayload;
-
+    public async auth(token: string): Promise<PartnerCredentials> {
+        const jwtPayload: BthJwtPayload = await this.getJwtPayload(token) as BthJwtPayload;
         const context: RequestContext = {
             database: jwtPayload.client.attributes.database,
             entity: jwtPayload.client.attributes.entidade,
             system: jwtPayload.client.attributes.sistema
         }
-
+        // const context: RequestContext = await this.getJwtPayload(token) as RequestContext;
+        // const context: RequestContext = {
+        //     database: jwtPayload.client.attributes.database,
+        //     entity: jwtPayload.client.attributes.entidade,
+        //     system: jwtPayload.client.attributes.sistema
+        // }
         // const context: RequestContext = {
         //     database: 'database',
         //     entity: 'entity',
         //     system: 'system'
         // }
 
-        // TODO: call the partner service with the context
-        // and get the credentials
-        return this.partnerService.getPartnerCredentials(context);
-
-        // TODO: redirect the request to the partner product by the uri_redirect
-        // and fowoarding the request with the partner credentials
-        // const partnerCredentials: PartnerCredentials = this.partnerService.getPartnerCredentials(context);
-        // request to the uri_redirect with the partner credentials
-        // await fetch(partnerCredentials.uriRedirect + request.params, {
-        //     method: partnerCredentials.method;
-        //     headers: {
-        //         "Authorization": partnerCredentials.token,
-        //         // Add any other request headers here
-        //     },
-        //     body: JSON.stringify(request.body)
-        // }).then(response => {
-        //     return response;
-        // }).catch(error => {
-        //     // TODO: handle the error
-        //     throw new GatewayServiceException("Error calling partner service", error);
-        // });
+        return await this.partnerService.getPartnerCredentials(context);
     }
 
     /**

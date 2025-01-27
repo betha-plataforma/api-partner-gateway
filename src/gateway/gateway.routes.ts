@@ -11,12 +11,9 @@ let cacheWithRedis = apicache.options({ redisClient: getRedisClient() }).middlew
 /**
  * Routes for the gateway
  */
-router.post("/auth", /*cacheWithRedis('1 day'),*/(req: Request, res: Response) =>
+router.use("/auth", /*cacheWithRedis('1 day'),*/(req: Request, res: Response, next: any) =>
     new GatewayController(
-        req,
-        res,
         new GatewayService(new PartnerService)
-    ).auth()
+    ).auth(req, res, next)
 );
-
 export { router };

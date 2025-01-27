@@ -1,45 +1,51 @@
 import { Request, Response } from "express";
 import { check, validationResult } from "express-validator";
+import httpProxy from 'express-http-proxy';
 import { GatewayValidationException, InvalidTokenException } from "./gateway.errors";
 import { GatewayService } from "./gateway.service";
 import AppConstants from "../app-constants";
+import { PartnerCredentials } from "../partner/partner-credentials.interface";
 
 /**
  * Controller class for handling gateway-related functionality.
  * 
- * @param req The request object.
- * @param res The response object.
  * @param gatewayService The gateway service.
  */
 class GatewayController {
-    private req: Request;
-    private res: Response;
     private gatewayService: GatewayService;
 
     /**
      * Constructor for the GatewayController class.
      * 
-     * @param req - The incoming request object, containing data like headers, body, and params.
-     * @param res - The response object, used to send responses back to the client.
+     * @param gatewayService The gateway service.
      */
-    constructor(req: Request, res: Response, gatewayService: GatewayService) {
-        this.req = req;
-        this.res = res;
+    constructor(gatewayService: GatewayService) {
         this.gatewayService = gatewayService;
     }
 
     /**
      * Authenticates and redirects the user to the application.
      */
-    public async auth(): Promise<void> {
+    public async auth(req: Request, res: Response, next: any): Promise<void> {
         try {
             await check(AppConstants.BTH_GATEWAY_ID_HEADER, "Invalid JWT token")
-                .exists().isJWT().run(this.req);
-            this.handleValidationErrors();
+                .exists().isJWT().run(req);
+            this.handleValidationErrors(req);
 
-            await this.gatewayService.auth(this.req);
+            const partnerResponse: PartnerCredentials = await this.gatewayService.auth(
+                req.headers[AppConstants.BTH_GATEWAY_ID_HEADER] as string
+            );
 
-            this.res.status(200).send("redirected");
+            req.headers = {
+                ...req.headers,
+                ...partnerResponse.headers
+            };
+            req.method = partnerResponse.method;
+
+            // Redirect the user to the partner application
+            httpProxy(partnerResponse.uriRedirect, {
+                proxyReqPathResolver: () => partnerResponse.uriRedirect
+            })(req, res, next);
         } catch (error) {
             // TODO: Log the error with a logger
             console.error(error);
@@ -47,9 +53,9 @@ class GatewayController {
                 error instanceof GatewayValidationException ||
                 error instanceof InvalidTokenException
             ) {
-                this.res.status(error.statusCode).json({ error });
+                res.status(error.statusCode).json({ error });
             } else {
-                this.res.status(500).json({ message: "Internal server error" });
+                res.status(500).json({ message: "Internal server error" });
             }
         }
     }
@@ -59,8 +65,8 @@ class GatewayController {
      * 
      * @throws {ValidationException} When validation errors are present in the request.
      */
-    private handleValidationErrors(): void {
-        const errors = validationResult(this.req);
+    private handleValidationErrors(req: Request): void {
+        const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
             throw new GatewayValidationException("Validation failed", errors.array());

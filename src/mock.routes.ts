@@ -3,19 +3,15 @@ import AppConstants from "./app-constants";
 
 const router = Router();
 
-router.get("/betha/redirect-to-application1-trigger", async (_req: Request, res: Response): Promise<void> => {
+router.use("/betha/redirect-to-application1-trigger", async (_req: Request, res: Response): Promise<void> => {
     const jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
-
     const response = await fetch('http://localhost:3000/partner-gateway/v1/auth', {
-        method: 'POST',
+        method: 'GET',
         headers: {
             'Accept': 'application/json',
             [AppConstants.BTH_GATEWAY_ID_HEADER]: jwtToken,
-        },
-        body: JSON.stringify({})
+        }
     });
-
-    console.log(response);
 
     const data = await response.json();
 
@@ -23,18 +19,19 @@ router.get("/betha/redirect-to-application1-trigger", async (_req: Request, res:
 });
 
 
-router.post("/partner/auth", (_req: Request, res: Response): void => {
+router.use("/partner/auth", (_req: Request, res: Response): void => {
     res.status(200).json({
-        "data": {
-            "token": "dalsjkdnhçalkfjaçlksfjdçalkjf",
-            "uri_redirect": "http://localhost:3000/application1"
+        "uriRedirect": "http://localhost:3000/mock/partner/application1",
+        "method": "GET",
+        "headers": {
+            "Authorization": "Bearer access-token-to-application1",
+            "Accept": "application/json"
         }
     });
 });
 
-router.get("/partner/application1", (req: Request, res: Response): void => {
-
-    if (req.headers.authorization !== "dalsjkdnhçalkfjaçlksfjdçalkjf") {
+router.use("/partner/application1", (req: Request, res: Response): void => {
+    if (req.headers.authorization !== "Bearer access-token-to-application1") {
         res.status(401).json({
             "message": "Unauthorized"
         });

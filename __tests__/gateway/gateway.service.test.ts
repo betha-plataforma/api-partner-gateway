@@ -37,10 +37,13 @@ describe("GatewayService", () => {
 
         const mockCredentials: PartnerCredentials = {
             uriRedirect: "http://localhost:3000",
-            token: "mock-partner-token"
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
         };
 
-        const req = { header: jest.fn().mockReturnValue("mock-jwt-token") } as any;
+        const token = "mock-jwt-token";
         const decodedHeader = { kid: "test-kid", alg: "RS256" };
 
         mockJwksClient.getSigningKey.mockResolvedValue({
@@ -54,11 +57,11 @@ describe("GatewayService", () => {
         jest.spyOn(partnerService, "getPartnerCredentials").mockResolvedValue(mockCredentials);
 
         const gatewayService = new GatewayService(partnerService);
-        const result = await gatewayService.auth(req);
+        const result = await gatewayService.auth(token);
 
         expect(result).toEqual(mockCredentials);
         expect(mockJwksClient.getSigningKey).toHaveBeenCalledWith("test-kid");
-        expect(jwt.verify).toHaveBeenCalledWith("mock-jwt-token", mockPublicKey, { algorithms: ["RS256"] });
+        expect(jwt.verify).toHaveBeenCalledWith(token, mockPublicKey, { algorithms: ["RS256"] });
         expect(partnerService.getPartnerCredentials).toHaveBeenCalledWith({
             database: "test-database",
             entity: "test-entity",
@@ -79,11 +82,10 @@ describe("GatewayService", () => {
 
         const partnerService = new PartnerService();
         const gatewayService = new GatewayService(partnerService);
-        const req = { header: jest.fn().mockReturnValue("mock-jwt-token") } as any;
+        const token = "mock-jwt-token";
 
-        await expect(gatewayService.auth(req)).rejects.toThrow(InvalidTokenException);
+        await expect(gatewayService.auth(token)).rejects.toThrow(InvalidTokenException);
         expect(mockJwksClient.getSigningKey).toHaveBeenCalledWith(expect.any(String));
-        expect(jwt.verify).toHaveBeenCalledWith("mock-jwt-token", mockPublicKey, { algorithms: ["RS256"] });
+        expect(jwt.verify).toHaveBeenCalledWith(token, mockPublicKey, { algorithms: ["RS256"] });
     });
 });
-

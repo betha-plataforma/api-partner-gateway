@@ -42,11 +42,10 @@ describe('PartnerService', () => {
         expect(global.fetch).toHaveBeenCalledWith(
             'http://localhost:3000/mock/partner/auth',
             expect.objectContaining({
-                method: 'POST',
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(mockContext)
+                }
             })
         );
         expect(credentials).toEqual({

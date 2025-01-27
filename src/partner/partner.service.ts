@@ -31,11 +31,10 @@ class PartnerService {
      */
     public async getPartnerCredentials(context: RequestContext): Promise<PartnerCredentials> {
         return fetch(this.partnerAuthUri, {
-            method: "POST",
+            method: "GET",
             headers: {
                 "Content-Type": "application/json",
-            },
-            body: JSON.stringify(context)
+            }
         }).then(response => {
             if (!response?.ok) {
                 if (response.status >= 400 && response.status < 500) {
