@@ -5,7 +5,7 @@ import { router as mockRoutes } from "./mock.routes";
 const app: Application = express();
 
 // Express configuration
-app.set("port", process.env.PORT || 3000);
+app.set("port", process.env.PORT);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
