@@ -32,11 +32,11 @@ class GatewayController {
             await this.verifyJwtToken(req);
             const token = req.headers[AppConstants.BTH_GATEWAY_ID_HEADER] as string;
 
-            const partnerCredentials = await this.gatewayService.auth(token);
+            const credentials = await this.gatewayService.auth(token);
 
-            this.applyPartnerCredentialsToRequest(req, partnerCredentials);
+            this.applyPartnerCredentialsToRequest(req, credentials);
             // Proxy the request to the partner application
-            this.proxyRequest(req, res, next, partnerCredentials.uriRedirect);
+            this.proxyRequest(req, res, next, credentials.uriRedirect);
         } catch (error) {
             console.error(error); // TODO: Replace with proper logging
             if (error instanceof GatewayValidationException || error instanceof InvalidTokenException) {
@@ -69,14 +69,14 @@ class GatewayController {
      * Applies partner credentials to the incoming request.
      * 
      * @param req - The request object.
-     * @param partnerCredentials - The partner credentials.
+     * @param credentials - The partner credentials.
      */
-    private applyPartnerCredentialsToRequest(req: Request, partnerCredentials: PartnerCredentials): void {
+    private applyPartnerCredentialsToRequest(req: Request, credentials: PartnerCredentials): void {
         req.headers = {
             ...req.headers,
-            ...partnerCredentials.headers,
+            ...credentials.headers,
         };
-        req.method = partnerCredentials.method;
+        req.method = credentials.method;
     }
 
     /**

@@ -26,6 +26,7 @@ class GatewayService {
         this.jwksClient = jwksRsa({
             jwksUri,
             // TODO: check if its necessary to cache the keys on redis
+            // or caching the hole request is enough
             cache: true,
             cacheMaxEntries: 3,
             cacheMaxAge: 172800000 // Cache duration in milliseconds (48 hours)
