@@ -4,7 +4,7 @@ import { config } from "dotenv";
 import { GatewayService } from "../../src/gateway/gateway.service";
 import { InvalidTokenException } from "../../src/gateway/gateway.errors";
 import { PartnerService } from "../../src/gateway/partner/partner.service";
-import { PartnerCredentials } from "../../src/gateway/partner/partner-credentials.interface";
+import { PartnerCredentials } from "../../src/gateway/partner/partner.interfaces";
 
 jest.mock("jwks-rsa");
 jest.mock("jsonwebtoken");

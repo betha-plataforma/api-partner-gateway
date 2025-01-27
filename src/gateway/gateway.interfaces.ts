@@ -24,3 +24,9 @@ export interface BthJwtPayload {
     iat: number;
     exp: number;
 }
+
+export interface BthContext {
+    database: string;
+    entity: string;
+    system: string;
+}

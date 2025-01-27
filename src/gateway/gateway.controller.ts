@@ -4,7 +4,7 @@ import httpProxy from 'express-http-proxy';
 import { GatewayValidationException, InvalidTokenException } from "./gateway.errors";
 import { GatewayService } from "./gateway.service";
 import AppConstants from "../app-constants";
-import { PartnerCredentials } from "./partner/partner-credentials.interface";
+import { PartnerCredentials } from "./partner/partner.interfaces";
 
 /**
  * Controller class for handling gateway-related functionality.

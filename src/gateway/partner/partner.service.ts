@@ -1,5 +1,5 @@
-import { PartnerCredentials } from "./partner-credentials.interface";
-import { BthContext } from "../bth-context.interface";
+import { PartnerCredentials } from "./partner.interfaces";
+import { BthContext } from "../gateway.interfaces";
 import {
     PartnerAuthServiceException,
     PartnerServiceException
