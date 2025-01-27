@@ -1,4 +1,3 @@
-// TODO: define a standard custom exception
 export class InvalidTokenException extends Error {
     public statusCode: number;
     public errors?: any;

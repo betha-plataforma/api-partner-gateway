@@ -1,4 +1,3 @@
-// TODO: define a standard custom exception
 export class PartnerAuthServiceException extends Error {
     public errors?: any;
 

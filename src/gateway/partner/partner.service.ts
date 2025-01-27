@@ -29,6 +29,7 @@ class PartnerService {
      * @returns A promise that resolves to the partner credentials.
      */
     public async getPartnerCredentials(context: BthContext): Promise<PartnerCredentials> {
+        // TODO: define how to authenticate with the partner service
         const urlWithParams = this.buildUrlWithParams(context);
         let response: Response;
         try {
