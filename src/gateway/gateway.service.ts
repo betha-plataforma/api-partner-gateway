@@ -5,6 +5,7 @@ import { BthContext } from "./bth-context.interface";
 import { PartnerCredentials } from "../partner/partner-credentials.interface";
 import { PartnerService } from "../partner/partner.service";
 import { BthJwtPayload } from "./bth-jwt-payload.interface";
+import assert from "assert";
 
 /**
  * The GatewayService class provides methods for authenticating requests to the
@@ -19,7 +20,7 @@ class GatewayService {
      */
     constructor(partnerService: PartnerService) {
         const jwksUri = process.env.JWKS_URI;
-        if (!jwksUri) throw new Error("ENV JWKS_URI is not defined");
+        assert(jwksUri, "ENV JWKS_URI is not defined");
 
         this.partnerService = partnerService;
         this.jwksClient = jwksRsa({
@@ -39,28 +40,26 @@ class GatewayService {
      * @returns A promise that resolves to the partner credentials.
      * @throws An error if the token is invalid or cannot be verified.
      */
-    // TODO: Change the return type to the response object of the partner product
-    // public async auth(req: Request): Promise<Response> {
     public async auth(token: string): Promise<PartnerCredentials> {
-        // const jwtPayload: BthJwtPayload = await this.getJwtPayload(token) as BthJwtPayload;
-        // const context: RequestContext = {
-        //     database: jwtPayload.client.attributes.database,
-        //     entity: jwtPayload.client.attributes.entidade,
-        //     system: jwtPayload.client.attributes.sistema
-        // }
-        // const context: RequestContext = await this.getJwtPayload(token) as RequestContext;
-        // const context: RequestContext = {
-        //     database: jwtPayload.client.attributes.database,
-        //     entity: jwtPayload.client.attributes.entidade,
-        //     system: jwtPayload.client.attributes.sistema
-        // }
-        const context: BthContext = {
-            database: 'database',
-            entity: 'entity',
-            system: 'system'
-        }
-
+        const context: BthContext = await this.extractContextFromJwt(token);
         return await this.partnerService.getPartnerCredentials(context);
+    }
+
+    /**
+     * Extracts the context information from the JWT token.
+     *
+     * @param token - The JWT token to extract context from.
+     * @returns The extracted context containing database, entity, and system.
+     * @throws {InvalidTokenException} If the JWT is invalid or cannot be verified.
+     */
+    private async extractContextFromJwt(token: string): Promise<BthContext> {
+        const jwtPayload = await this.getJwtPayload(token) as BthJwtPayload;
+
+        return {
+            database: jwtPayload.client.attributes.database,
+            entity: jwtPayload.client.attributes.entidade,
+            system: jwtPayload.client.attributes.sistema,
+        };
     }
 
     /**
@@ -71,19 +70,17 @@ class GatewayService {
      * @throws An error if the token is invalid or cannot be verified.
      */
     public async getJwtPayload(token: string): Promise<JwtPayload> {
+        const decodedHeader = jwt.decode(token, { complete: true });
+
+        assert(decodedHeader?.header.kid, new InvalidTokenException("Token header is missing the key ID"));
+
+        const signingKey = await this.getJwksSigningKey(decodedHeader.header.kid);
+
         try {
-            const decodedHeader = jwt.decode(token, { complete: true });
-
-            if (!decodedHeader || !decodedHeader.header.kid) {
-                throw new InvalidTokenException("Token header is missing the key ID");
-            }
-
-            const signingKey = await this.getJwksSigningKey(decodedHeader.header.kid);
-
             return jwt.verify(token, signingKey, { algorithms: ["RS256"] }) as JwtPayload;
         } catch (error) {
-            if (error instanceof jwt.TokenExpiredError || InvalidTokenException) {
-                throw new InvalidTokenException("JWT validation failed", error);
+            if (error instanceof jwt.TokenExpiredError) {
+                throw new InvalidTokenException("JWT validation failed: Token has expired", error);
             }
             throw error;
         }
