@@ -1,27 +1,26 @@
-import * as jose from "node-jose";
+import jwt from 'jsonwebtoken';
 import { GatewayController } from "../gateway.controller";
 import { jest } from "@jest/globals";
 import { GatewayService } from "../gateway.service";
 import { Request, Response } from "express";
 
 describe("Gateway routes", () => {
-    let keystore: jose.JWK.KeyStore;
-    let key: jose.JWK.Key;
+    let secretKey: string;
     let mockGatewayService: jest.Mocked<GatewayService>;
     let req: Partial<Request>;
     let res: Partial<Response>;
     let controller: GatewayController;
 
-    beforeAll(async () => {
-        keystore = jose.JWK.createKeyStore();
-        key = await keystore.generate("oct", 256, { alg: "HS256", use: "sig" });
+    beforeAll(() => {
+        secretKey = 'test-secret-key-256-bits-long';
     });
 
     beforeEach(() => {
         mockGatewayService = {
             auth: jest.fn(),
         } as unknown as jest.Mocked<GatewayService>;
-        jest.spyOn(GatewayService.prototype, "auth").mockImplementation(async (token: string) => {
+
+        jest.spyOn(GatewayService.prototype, "auth").mockImplementation(async () => {
             return {
                 uriRedirect: "mockUriRedirect",
                 method: "GET",
@@ -33,7 +32,6 @@ describe("Gateway routes", () => {
 
         req = {
             headers: {},
-            body: {},
         } as unknown as Partial<Request>;
 
         res = {
@@ -51,10 +49,9 @@ describe("Gateway routes", () => {
 
     test("should return 200 for a valid token", async () => {
         const payload = { user: "test-user" };
-        const token = await jose.JWS.createSign({ format: "compact", fields: { alg: "HS256" } }, key)
-            .update(JSON.stringify(payload))
-            .final();
-        req.headers = { "x-bth-gateway-id": token as unknown as string };
+        const token = jwt.sign(payload, secretKey, { algorithm: 'HS256' });
+
+        req.headers = { "x-bth-gateway-id": token };
 
         mockGatewayService.auth.mockResolvedValueOnce({
             uriRedirect: "mockUriRedirect",
@@ -86,10 +83,9 @@ describe("Gateway routes", () => {
 
     test("should return 500 for unexpected errors", async () => {
         const payload = { user: "test-user" };
-        const token = await jose.JWS.createSign({ format: "compact", fields: { alg: "HS256" } }, key)
-            .update(JSON.stringify(payload))
-            .final();
-        req.headers = { "x-bth-gateway-id": token as unknown as string };
+        const token = jwt.sign(payload, secretKey, { algorithm: 'HS256' });
+
+        req.headers = { "x-bth-gateway-id": token };
 
         mockGatewayService.auth.mockImplementationOnce(() => {
             throw new Error("Unexpected server error");
