@@ -25,6 +25,15 @@ export interface BthJwtPayload {
     exp: number;
 }
 
+/**
+ * Representa o contexto de uma aplicação da Betha.
+ *
+ * @interface BthContext
+ *
+ * @property {string} database - O identificador do banco de dados sendo acessado.
+ * @property {string} entity - O identificador da entidade dentro do banco de dados.
+ * @property {string} system - O identificador do sistema.
+ */
 export interface BthContext {
     database: string;
     entity: string;

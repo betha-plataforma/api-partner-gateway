@@ -4,69 +4,71 @@ import { AuthServiceRequestException, AuthServiceException } from './auth.errors
 import assert from 'assert';
 
 /**
- * The AuthService class provides methods for authenticating requests to the
- * Auth service.
+ * A classe AuthService fornece métodos para interagir com um serviço de autenticação.
+ * Ela recupera credenciais de autenticação com base no contexto fornecido.
  */
-// TODO: translate to portuguese
 class AuthService {
     private authUri: string;
 
     /**
-     * Constructor for the AuthService class.
+     * Construtor da classe AuthService.
      */
     constructor() {
         const authUri = process.env.AUTH_URI;
-        assert(authUri, 'ENV AUTH_URI is not defined');
+        assert(authUri, 'A variável de ambiente AUTH_URI não está definida');
         this.authUri = authUri;
     }
 
     /**
-     * Gets the auth credentials from the auth service.
+     * Recupera credenciais de autenticação com base no contexto fornecido.
      *
-     * @param context - The context from the JWT.
-     * @returns A promise that resolves to the auth credentials.
+     * @param contexto - O contexto contendo as informações necessárias para obter as credenciais.
+     * @returns Uma promessa que resolve as credenciais de autenticação.
+     * @throws AuthServiceException - Se ocorrer um erro inesperado durante a operação de busca.
+     * @throws AuthServiceRequestException - Se a resposta do serviço de autenticação não for bem-sucedida.
      */
-    public async getCredentials(context: BthContext): Promise<AuthCredentials> {
-        // TODO: define how to authenticate with the auth service
-        // TODO: cache credentials by context
-        const urlWithParams = this.buildUrlWithParams(context);
-        let response: Response;
+    public async getCredentials(contexto: BthContext): Promise<AuthCredentials> {
+        // TODO: definir como autenticar com o serviço de autenticação
+        // TODO: cachear as credenciais por contexto
+        const urlComParametros = this.buildUrlWithParams(contexto);
+        let resposta: Response;
         try {
-            response = await fetch(urlWithParams, this.getRequestOptions());
+            resposta = await fetch(urlComParametros, this.getRequestOptions());
         } catch (error) {
-            throw new AuthServiceException('An unexpected error occurred', error);
+            throw new AuthServiceException('Ocorreu um erro inesperado', error);
         }
 
-        assert(response.ok, new AuthServiceRequestException(response.statusText));
+        assert(resposta.ok, new AuthServiceRequestException(resposta.statusText));
 
-        return await this.parseResponseToCredentials(response);
+        return await this.parseResponseToCredentials(resposta);
     }
 
     /**
-     * Parses the response object to extract auth credentials.
+     * Analisa a resposta fornecida para extrair as credenciais de autenticação.
      *
-     * @param response - The response object to parse.
-     * @returns An object containing the URI redirect, method, and headers from the auth credentials.
+     * @param resposta - O objeto de resposta a ser analisado.
+     * @returns Uma promessa que resolve para um objeto AuthCredentials.
+     * @throws AuthServiceException se campos obrigatórios estiverem ausentes na resposta.
      */
-    private async parseResponseToCredentials(response: Response): Promise<AuthCredentials> {
-        const credentials: AuthCredentials = await response.json();
+    private async parseResponseToCredentials(resposta: Response): Promise<AuthCredentials> {
+        const credenciais: AuthCredentials = await resposta.json();
         assert(
-            credentials.uriRedirect,
-            new AuthServiceException('Missing required field: uriRedirect')
+            credenciais.uriRedirect,
+            new AuthServiceException('Campo obrigatório ausente: uriRedirect')
         );
-        assert(credentials.method, new AuthServiceException('Missing required field: uriRedirect'));
+        assert(credenciais.method, new AuthServiceException('Campo obrigatório ausente: method'));
 
         return {
-            uriRedirect: credentials.uriRedirect,
-            method: credentials.method,
-            headers: credentials.headers
+            uriRedirect: credenciais.uriRedirect,
+            method: credenciais.method,
+            headers: credenciais.headers
         };
     }
 
     /**
-     * Generates the request options for an HTTP GET request.
+     * Gera as opções de solicitação para uma requisição HTTP GET.
      *
-     * @returns {RequestInit} An object containing the request options.
+     * @returns {RequestInit} As opções de solicitação, incluindo método e cabeçalhos.
      */
     private getRequestOptions(): RequestInit {
         return {
@@ -78,14 +80,14 @@ class AuthService {
     }
 
     /**
-     * Constructs a URL with query parameters based on the provided context.
+     * Constrói uma URL com parâmetros de consulta com base no contexto fornecido.
      *
-     * @param context - An object containing key-value pairs to be converted into query parameters.
-     * @returns A string representing the constructed URL with the appended query parameters.
+     * @param contexto - O contexto da requisição.
+     * @returns A URL construída com os parâmetros de consulta anexados.
      */
-    private buildUrlWithParams(context: BthContext): string {
-        const queryParams = new URLSearchParams(Object.entries(context)).toString();
-        return `${this.authUri}?${queryParams}`;
+    private buildUrlWithParams(contexto: BthContext): string {
+        const parametrosQuery = new URLSearchParams(Object.entries(contexto)).toString();
+        return `${this.authUri}?${parametrosQuery}`;
     }
 }
 
