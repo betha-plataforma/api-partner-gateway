@@ -3,8 +3,8 @@ import jwksRsa from "jwks-rsa";
 import { config } from "dotenv";
 import { GatewayService } from "../../src/gateway/gateway.service";
 import { InvalidTokenException } from "../../src/gateway/gateway.errors";
-import { PartnerService } from "../../src/partner/partner.service";
-import { PartnerCredentials } from "../../src/partner/partner-credentials.interface";
+import { PartnerService } from "../../src/gateway/partner/partner.service";
+import { PartnerCredentials } from "../../src/gateway/partner/partner-credentials.interface";
 
 jest.mock("jwks-rsa");
 jest.mock("jsonwebtoken");

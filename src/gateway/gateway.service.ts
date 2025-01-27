@@ -2,8 +2,8 @@ import jwksRsa from "jwks-rsa";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { InvalidTokenException } from "./gateway.errors";
 import { BthContext } from "./bth-context.interface";
-import { PartnerCredentials } from "../partner/partner-credentials.interface";
-import { PartnerService } from "../partner/partner.service";
+import { PartnerCredentials } from "./partner/partner-credentials.interface";
+import { PartnerService } from "./partner/partner.service";
 import { BthJwtPayload } from "./bth-jwt-payload.interface";
 import assert from "assert";
 

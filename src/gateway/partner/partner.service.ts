@@ -1,9 +1,9 @@
 import { PartnerCredentials } from "./partner-credentials.interface";
-import { BthContext } from "../gateway/bth-context.interface";
+import { BthContext } from "../bth-context.interface";
 import {
     PartnerAuthServiceException,
     PartnerServiceException
-} from "../partner/partner.errors";
+} from "./partner.errors";
 import assert from "assert";
 
 /**
