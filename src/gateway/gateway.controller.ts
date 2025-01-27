@@ -35,7 +35,7 @@ class GatewayController {
             const partnerCredentials = await this.gatewayService.auth(token);
 
             this.applyPartnerCredentialsToRequest(req, partnerCredentials);
-            // Redirect the request to the partner application
+            // Proxy the request to the partner application
             this.proxyRequest(req, res, next, partnerCredentials.uriRedirect);
         } catch (error) {
             console.error(error); // TODO: Replace with proper logging

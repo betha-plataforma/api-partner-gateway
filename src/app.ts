@@ -11,7 +11,11 @@ app.use(express.urlencoded({ extended: true }));
 
 // API routes
 app.use("/partner-gateway/v1", gatewayRoutes);
-app.use("/mock", mockRoutes);
+
+// if not production, use mock routes
+if (process.env.NODE_ENV !== "production") {
+    app.use("/mock", mockRoutes);
+}
 
 // Health Check
 app.use("/alive", (_req: Request, res: Response): void => {
