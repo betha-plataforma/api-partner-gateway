@@ -13,6 +13,7 @@ const cacheWithRedis = apicache.options({ redisClient: getRedisClient() }).middl
  */
 router.use(
     '/auth',
+    // TODO: remove full request cache. Cache by context
     /*cacheWithRedis('1 day'),*/ (req: Request, res: Response, next: any) =>
         new GatewayController(new GatewayService(new PartnerService())).auth(req, res, next)
 );

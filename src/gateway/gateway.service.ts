@@ -25,9 +25,8 @@ class GatewayService {
         this.partnerService = partnerService;
         this.jwksClient = jwksRsa({
             jwksUri,
-            // TODO: check if its necessary to cache the keys on redis
-            // or caching the hole request is enough
             cache: true,
+            // TODO: change to 4 hours and define magic numbers
             cacheMaxEntries: 3,
             cacheMaxAge: 172800000 // Cache duration in milliseconds (48 hours)
         });
@@ -43,6 +42,8 @@ class GatewayService {
      */
     public async auth(token: string): Promise<PartnerCredentials> {
         const context: BthContext = await this.extractContextFromJwt(token);
+
+        // TODO: cache the partner credentials by context
         return await this.partnerService.getPartnerCredentials(context);
     }
 

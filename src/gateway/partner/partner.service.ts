@@ -7,6 +7,8 @@ import assert from 'assert';
  * The PartnerService class provides methods for authenticating requests to the
  * Partner service.
  */
+// TODO: translate to portuguese
+// TODO: change to auth.service
 class PartnerService {
     private partnerAuthUri: string;
 
