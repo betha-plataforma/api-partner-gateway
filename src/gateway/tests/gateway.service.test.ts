@@ -1,10 +1,10 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
 import jwksRsa from "jwks-rsa";
 import { config } from "dotenv";
-import { GatewayService } from "../../src/gateway/gateway.service";
-import { InvalidTokenException } from "../../src/gateway/gateway.errors";
-import { PartnerService } from "../../src/gateway/partner/partner.service";
-import { PartnerCredentials } from "../../src/gateway/partner/partner.interfaces";
+import { GatewayService } from "../gateway.service";
+import { InvalidTokenException } from "../gateway.errors";
+import { PartnerService } from "../partner/partner.service";
+import { PartnerCredentials } from "../partner/partner.interfaces";
 
 jest.mock("jwks-rsa");
 jest.mock("jsonwebtoken");

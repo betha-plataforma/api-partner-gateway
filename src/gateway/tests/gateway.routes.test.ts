@@ -1,7 +1,7 @@
 import * as jose from "node-jose";
-import { GatewayController } from "../../src/gateway/gateway.controller";
+import { GatewayController } from "../gateway.controller";
 import { jest } from "@jest/globals";
-import { GatewayService } from "../../src/gateway/gateway.service";
+import { GatewayService } from "../gateway.service";
 import { Request, Response } from "express";
 
 describe("Gateway routes", () => {

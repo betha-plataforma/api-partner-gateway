@@ -1,6 +1,6 @@
-import { PartnerService } from "../../src/gateway/partner/partner.service";
-import { PartnerAuthServiceException } from "../../src/gateway/partner/partner.errors";
-import { BthContext } from "../../src/gateway/gateway.interfaces";
+import { PartnerService } from "../partner.service";
+import { PartnerAuthServiceException } from "../partner.errors";
+import { BthContext } from "../../gateway.interfaces";
 
 global.fetch = jest.fn();
 
