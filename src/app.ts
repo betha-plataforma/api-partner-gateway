@@ -1,6 +1,6 @@
 import express, { Application, Request, Response } from "express";
 import { router as gatewayRoutes } from "./gateway/gateway.routes";
-import { router as mockRoutes } from "./routes/mock.routes";
+import { router as mockRoutes } from "./mock.routes";
 
 const app: Application = express();
 
