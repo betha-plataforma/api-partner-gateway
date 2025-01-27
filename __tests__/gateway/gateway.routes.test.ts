@@ -1,5 +1,5 @@
 import * as jose from "node-jose";
-import { GatewayController } from "../../src/gateway/gateway.cotroller";
+import { GatewayController } from "../../src/gateway/gateway.controller";
 import { jest } from "@jest/globals";
 import { GatewayService } from "../../src/gateway/gateway.service";
 import { Request, Response } from "express";

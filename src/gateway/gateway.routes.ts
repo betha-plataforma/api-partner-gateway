@@ -1,6 +1,6 @@
 import apicache from 'apicache'
 import { Router, Request, Response } from "express";
-import { GatewayController } from "./gateway.cotroller";
+import { GatewayController } from "./gateway.controller";
 import { GatewayService } from "./gateway.service";
 import { PartnerService } from "../partner/partner.service";
 import { getRedisClient } from "../redis-config";

@@ -27,8 +27,9 @@ describe('PartnerService', () => {
             ok: true,
             status: 200,
             json: () => Promise.resolve({
-                clientId: 'test-client-id',
-                clientSecret: 'test-client-secret'
+                uriRedirect: 'http://localhost:3000/mock/partner/application1',
+                method: 'GET',
+                headers: {}
             })
         };
         (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
@@ -45,8 +46,9 @@ describe('PartnerService', () => {
             })
         );
         expect(credentials).toEqual({
-            clientId: 'test-client-id',
-            clientSecret: 'test-client-secret'
+            uriRedirect: 'http://localhost:3000/mock/partner/application1',
+            method: 'GET',
+            headers: {}
         });
     });
 
