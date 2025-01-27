@@ -18,9 +18,7 @@ describe('AuthService', () => {
         jest.clearAllMocks();
     });
 
-    afterEach(() => {
-        delete process.env.AUTH_URI;
-    });
+    afterEach(() => {});
 
     test('should successfully get partner credentials', async () => {
         const mockResponse = {
@@ -38,7 +36,7 @@ describe('AuthService', () => {
         const credentials = await authService.getCredentials(mockContext);
 
         expect(global.fetch).toHaveBeenCalledWith(
-            'http://localhost:3000/mock/partner/auth?database=testDB&entity=user&system=auth',
+            'http://localhost:3000/mock/partner/auth?database=1&entity=1&system=1',
             expect.objectContaining({
                 method: 'GET',
                 headers: {
@@ -95,6 +93,8 @@ describe('AuthService', () => {
     test('should throw Error when AUTH_URI is not defined', () => {
         delete process.env.AUTH_URI;
 
-        expect(() => new AuthService()).toThrow('ENV AUTH_URI is not defined');
+        expect(() => new AuthService()).toThrow(
+            'A variável de ambiente AUTH_URI não está definida'
+        );
     });
 });

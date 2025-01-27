@@ -1,6 +1,7 @@
 import express, { Application, Request, Response } from 'express';
 import { router as gatewayRoutes } from './gateway/gateway.routes';
 import { router as mockRoutes } from './mock.routes';
+import { router as cacheRoutes } from './cache/cache.routes';
 
 const app: Application = express();
 
@@ -11,6 +12,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // API routes
 app.use('/partner-gateway/v1', gatewayRoutes);
+
+// Cache
+app.use('/cache', cacheRoutes);
 
 // if not production, use mock routes
 if (process.env.NODE_ENV !== 'production') {

@@ -23,7 +23,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "apicache": "^1.6.3",
     "axios": "^1.7.9",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
@@ -31,6 +30,7 @@
     "express-validator": "^7.2.1",
     "jsonwebtoken": "^9.0.2",
     "jwks-rsa": "^3.1.0",
+    "node-cache": "^5.1.2",
     "redis": "^4.7.0"
   },
   "devDependencies": {
