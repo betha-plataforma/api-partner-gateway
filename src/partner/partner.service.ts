@@ -31,7 +31,7 @@ class PartnerService {
      */
     public async getPartnerCredentials(context: RequestContext): Promise<PartnerCredentials> {
         return fetch(this.partnerAuthUri, {
-            method: "GET",
+            method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },

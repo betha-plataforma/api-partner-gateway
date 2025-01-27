@@ -17,7 +17,7 @@ describe('PartnerService', () => {
     };
 
     beforeEach(() => {
-        process.env.PARTNER_AUTH_URI = 'https://api.partner.com/auth';
+        process.env.PARTNER_AUTH_URI = 'http://localhost:3000/mock/partner/auth';
         partnerService = new PartnerService();
         jest.clearAllMocks();
     });
@@ -40,9 +40,9 @@ describe('PartnerService', () => {
         const credentials = await partnerService.getPartnerCredentials(mockContext);
 
         expect(global.fetch).toHaveBeenCalledWith(
-            'https://api.partner.com/auth',
+            'http://localhost:3000/mock/partner/auth',
             expect.objectContaining({
-                method: 'GET',
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },

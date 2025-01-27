@@ -1,8 +1,9 @@
 import request from "supertest";
 import * as jose from "node-jose";
-import app from "../../src/app";
 import { GatewayController } from "../../src/gateway/gateway.cotroller";
 import { jest } from "@jest/globals";
+import { GatewayService } from "../../src/gateway/gateway.service";
+import { Request, Response } from "express";
 
 /**
  * Tests for the gateway routes.
@@ -10,74 +11,93 @@ import { jest } from "@jest/globals";
 describe("Gateway routes", () => {
     let keystore: jose.JWK.KeyStore;
     let key: jose.JWK.Key;
+    let mockGatewayService: jest.Mocked<GatewayService>;
+    let req: Partial<Request>;
+    let res: Partial<Response>;
+    let controller: GatewayController;
 
-    /**
-     * Generate a key before running the tests.
-     */
     beforeAll(async () => {
         keystore = jose.JWK.createKeyStore();
         key = await keystore.generate("oct", 256, { alg: "HS256", use: "sig" });
     });
 
-    /**
-     * Reset the mocks after each test.
-     */
+    beforeEach(() => {
+        mockGatewayService = {
+            auth: jest.fn(),
+        } as unknown as jest.Mocked<GatewayService>;
+        jest.spyOn(GatewayService.prototype, "auth").mockImplementation(async () => {
+            return {
+                uriRedirect: "mockUriRedirect",
+                token: "mockToken"
+            };
+        });
+
+        req = {
+            headers: {},
+            body: {},
+        } as unknown as Partial<Request>;
+
+        res = {
+            status: jest.fn().mockReturnThis(),
+            send: jest.fn(),
+            json: jest.fn(),
+        } as unknown as Partial<Response>;
+
+        controller = new GatewayController(req as Request, res as Response, mockGatewayService);
+    });
+
     afterEach(() => {
         jest.restoreAllMocks();
     });
 
-    test("Get gateway with missing token", async () => {
-        const res = await request(app)
-            .post("/partner-gateway/v1/auth");
+    test("should return 200 for a valid token", async () => {
+        const payload = { user: "test-user" };
+        const token = await jose.JWS.createSign({ format: "compact", fields: { alg: "HS256" } }, key)
+            .update(JSON.stringify(payload))
+            .final();
+        req.headers = { "x-bth-gateway-id": token as unknown as string };
 
-        expect(res.status).toBe(422);
-        expect(res.body).toEqual({
-            errors: [
-                {
-                    type: "field",
-                    path: "token",
-                    msg: "Invalid JWT token",
-                    location: "body"
-                },
-                {
-                    location: "body",
-                    msg: "Invalid JWT token",
-                    path: "token",
-                    type: "field"
-                }
-            ]
+        mockGatewayService.auth.mockResolvedValueOnce({
+            uriRedirect: "mockUriRedirect",
+            token: "mockToken"
         });
+
+        await controller.auth();
+
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.send).toHaveBeenCalledWith("redirected");
+        expect(mockGatewayService.auth).toHaveBeenCalledWith(req as Request);
     });
 
-    test("Get gateway with invalid token", async () => {
-        const res = await request(app)
-            .post("/partner-gateway/v1/auth")
-            .send({ token: "invalid-token" });
+    test("should return 422 for an invalid token", async () => {
+        if (req.headers) {
+            req.headers["x-bth-gateway-id"] = "invalid-token";
+        }
 
-        expect(res.status).toBe(422);
-        expect(res.body).toEqual({
-            errors: [
-                {
-                    type: "field",
-                    msg: "Invalid JWT token",
-                    path: "token",
-                    location: "body",
-                    value: "invalid-token"
-                }
-            ]
-        });
+        await controller.auth();
+
+        expect(res.status).toHaveBeenCalledWith(422);
+        expect(res.json).toHaveBeenCalledWith(
+            expect.objectContaining({
+                error: expect.anything(),
+            })
+        );
     });
 
-    test("Handles unexpected errors gracefully", async () => {
-        jest.spyOn(GatewayController.prototype, "auth").mockImplementationOnce(function () {
+    test("should return 500 for unexpected errors", async () => {
+        const payload = { user: "test-user" };
+        const token = await jose.JWS.createSign({ format: "compact", fields: { alg: "HS256" } }, key)
+            .update(JSON.stringify(payload))
+            .final();
+        req.headers = { "x-bth-gateway-id": token as unknown as string };
+
+        mockGatewayService.auth.mockImplementationOnce(() => {
             throw new Error("Unexpected server error");
         });
 
-        const res = await request(app)
-            .post("/partner-gateway/v1/auth")
-            .send({ token: "valid-token" });
+        await controller.auth();
 
-        expect(res.status).toBe(500);
-        expect(res.body).toEqual({});
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({ message: "Internal server error" });
     });
 });

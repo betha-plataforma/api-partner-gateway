@@ -54,6 +54,12 @@ class GatewayService {
             system: jwtPayload.client.attributes.sistema
         }
 
+        // const context: RequestContext = {
+        //     database: 'database',
+        //     entity: 'entity',
+        //     system: 'system'
+        // }
+
         // TODO: call the partner service with the context
         // and get the credentials
         return this.partnerService.getPartnerCredentials(context);

@@ -6,26 +6,24 @@ const router = Router();
 router.get("/betha/redirect-to-application1-trigger", async (_req: Request, res: Response): Promise<void> => {
     const jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
 
-    try {
-        const response = await fetch('http://localhost:3000/partner-gateway/v1/auth', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                [AppConstants.BTH_GATEWAY_ID_HEADER]: jwtToken,
-            },
-            body: JSON.stringify({})
-        });
+    const response = await fetch('http://localhost:3000/partner-gateway/v1/auth', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            [AppConstants.BTH_GATEWAY_ID_HEADER]: jwtToken,
+        },
+        body: JSON.stringify({})
+    });
 
-        const data = await response.json();
+    console.log(response);
 
-        res.status(response.status).json(data);
-    } catch (error) {
-        res.status(500).json({ message: "An error occurred while processing the request." });
-    }
+    const data = await response.json();
+
+    res.status(response.status).json(data);
 });
 
 
-router.get("/partner/auth", (_req: Request, res: Response): void => {
+router.post("/partner/auth", (_req: Request, res: Response): void => {
     res.status(200).json({
         "data": {
             "token": "dalsjkdnhçalkfjaçlksfjdçalkjf",
