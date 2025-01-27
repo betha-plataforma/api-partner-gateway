@@ -26,9 +26,9 @@ describe('GatewayService', () => {
         const mockJwtPayload: JwtPayload = {
             client: {
                 attributes: {
-                    database: 'test-database',
-                    entidade: 'test-entity',
-                    sistema: 'test-system'
+                    database: '1',
+                    entidade: '1',
+                    sistema: '1'
                 }
             }
         };

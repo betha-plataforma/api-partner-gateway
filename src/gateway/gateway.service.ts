@@ -17,14 +17,17 @@ class GatewayService {
      */
     constructor() {
         const jwksUri = process.env.JWKS_URI;
+        const jwksCacheAge = process.env.JWKS_CACHE_AGE;
+        const jwksCacheMaxEntries = process.env.JWKS_CACHE_MAX_ENTRIES;
         assert(jwksUri, 'ENV JWKS_URI is not defined');
+        assert(jwksCacheAge, 'ENV JWKS_CACHE_AGE is not defined');
+        assert(jwksCacheMaxEntries, 'ENV JWKS_CACHE_MAX_ENTRIES is not defined');
 
         this.jwksClient = jwksRsa({
             jwksUri,
             cache: true,
-            // TODO: change to 4 hours and define magic numbers
-            cacheMaxEntries: 3,
-            cacheMaxAge: 172800000 // Cache duration in milliseconds (48 hours)
+            cacheMaxEntries: parseInt(jwksCacheMaxEntries),
+            cacheMaxAge: parseInt(jwksCacheAge)
         });
     }
 

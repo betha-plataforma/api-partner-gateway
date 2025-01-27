@@ -4,15 +4,12 @@ import { BthContext } from '../../gateway.interfaces';
 
 global.fetch = jest.fn();
 
-// TODO: test all functionality on the borders of the AuthService class
-// make sure that the entry method is getCredentials and it returns Promise<AuthCredentials>
-// all other functionality should be private
 describe('AuthService', () => {
     let authService: AuthService;
     const mockContext: BthContext = {
-        database: 'testDB',
-        entity: 'user',
-        system: 'auth'
+        database: '1',
+        entity: '1',
+        system: '1'
     };
 
     beforeEach(() => {

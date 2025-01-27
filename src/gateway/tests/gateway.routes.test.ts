@@ -51,9 +51,9 @@ describe('Gateway routes', () => {
 
         jest.spyOn(GatewayService.prototype, 'getContext').mockImplementation(async () => {
             return {
-                database: 'database',
-                entity: 'entity',
-                system: 'system'
+                database: '1',
+                entity: '1',
+                system: '1'
             };
         });
 
