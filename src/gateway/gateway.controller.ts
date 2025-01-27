@@ -4,7 +4,7 @@ import httpProxy from 'express-http-proxy';
 import { GatewayValidationException, InvalidTokenException } from './gateway.errors';
 import { GatewayService } from './gateway.service';
 import AppConstants from '../app-constants';
-import { PartnerCredentials } from './partner/partner.interfaces';
+import { AuthCredentials } from './auth/auth.interfaces';
 
 /**
  * Controller class for handling gateway-related functionality.
@@ -24,7 +24,7 @@ class GatewayController {
     }
 
     /**
-     * Authenticates the incoming request by verifying the JWT token and applying partner credentials.
+     * Authenticates the incoming request by verifying the JWT token and applying auth credentials.
      * If authentication is successful, the request is proxied to the partner application.
      */
     public async auth(req: Request, res: Response, next: any): Promise<void> {
@@ -32,9 +32,11 @@ class GatewayController {
             await this.verifyJwtToken(req);
             const token = req.headers[AppConstants.BTH_GATEWAY_ID_HEADER] as string;
 
+            // const context = await this.gatewayService.getContext(token);
+            // const credentials = await this.authService.auth(context);
             const credentials = await this.gatewayService.auth(token);
 
-            this.applyPartnerCredentialsToRequest(req, credentials);
+            this.applyAuthCredentialsToRequest(req, credentials);
             // Proxy the request to the partner application
             this.proxyRequest(req, res, next, credentials.uriRedirect);
         } catch (error) {
@@ -69,12 +71,12 @@ class GatewayController {
     }
 
     /**
-     * Applies partner credentials to the incoming request.
+     * Applies auth credentials to the incoming request.
      *
      * @param req - The request object.
-     * @param credentials - The partner credentials.
+     * @param credentials - The auth credentials.
      */
-    private applyPartnerCredentialsToRequest(req: Request, credentials: PartnerCredentials): void {
+    private applyAuthCredentialsToRequest(req: Request, credentials: AuthCredentials): void {
         req.headers = {
             ...req.headers,
             ...credentials.headers

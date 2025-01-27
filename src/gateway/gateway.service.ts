@@ -2,8 +2,8 @@ import jwksRsa from 'jwks-rsa';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { InvalidTokenException } from './gateway.errors';
 import { BthContext } from './gateway.interfaces';
-import { PartnerCredentials } from './partner/partner.interfaces';
-import { PartnerService } from './partner/partner.service';
+import { AuthCredentials } from './auth/auth.interfaces';
+import { AuthService } from './auth/auth.service';
 import { BthJwtPayload } from './gateway.interfaces';
 import assert from 'assert';
 
@@ -13,16 +13,16 @@ import assert from 'assert';
  */
 class GatewayService {
     private jwksClient: jwksRsa.JwksClient;
-    private partnerService: PartnerService;
+    private authService: AuthService;
 
     /**
      * Constructor for the GatewayService class.
      */
-    constructor(partnerService: PartnerService) {
+    constructor(authService: AuthService) {
         const jwksUri = process.env.JWKS_URI;
         assert(jwksUri, 'ENV JWKS_URI is not defined');
 
-        this.partnerService = partnerService;
+        this.authService = authService;
         this.jwksClient = jwksRsa({
             jwksUri,
             cache: true,
@@ -34,17 +34,17 @@ class GatewayService {
 
     /**
      * Authenticates the request with the given JWT token on the JWKS endpoint,
-     * and returns the partner credentials from the partner auth service.
+     * and returns the auth credentials from the auth service.
      *
      * @param token - The JWT token from the request headers.
-     * @returns A promise that resolves to the partner credentials.
+     * @returns A promise that resolves to the auth credentials.
      * @throws An error if the token is invalid or cannot be verified.
      */
-    public async auth(token: string): Promise<PartnerCredentials> {
+    public async auth(token: string): Promise<AuthCredentials> {
         const context: BthContext = await this.extractContextFromJwt(token);
 
-        // TODO: cache the partner credentials by context
-        return await this.partnerService.getPartnerCredentials(context);
+        // TODO: cache the auth credentials by context
+        return await this.authService.getAuthCredentials(context);
     }
 
     /**

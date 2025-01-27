@@ -1,63 +1,60 @@
-import { PartnerCredentials } from './partner.interfaces';
+import { AuthCredentials } from './auth.interfaces';
 import { BthContext } from '../gateway.interfaces';
-import { PartnerAuthServiceException, PartnerServiceException } from './partner.errors';
+import { AuthServiceRequestException, AuthServiceException } from './auth.errors';
 import assert from 'assert';
 
 /**
- * The PartnerService class provides methods for authenticating requests to the
- * Partner service.
+ * The AuthService class provides methods for authenticating requests to the
+ * Auth service.
  */
 // TODO: translate to portuguese
 // TODO: change to auth.service
-class PartnerService {
-    private partnerAuthUri: string;
+class AuthService {
+    private authUri: string;
 
     /**
-     * Constructor for the PartnerService class.
+     * Constructor for the AuthService class.
      */
     constructor() {
-        const partnerAuthUri = process.env.PARTNER_AUTH_URI;
-        assert(partnerAuthUri, 'ENV PARTNER_AUTH_URI is not defined');
-        this.partnerAuthUri = partnerAuthUri;
+        const authUri = process.env.AUTH_URI;
+        assert(authUri, 'ENV AUTH_URI is not defined');
+        this.authUri = authUri;
     }
 
     /**
-     * Gets the partner credentials from the partner service.
+     * Gets the auth credentials from the auth service.
      *
      * @param context - The context from the JWT.
-     * @returns A promise that resolves to the partner credentials.
+     * @returns A promise that resolves to the auth credentials.
      */
-    public async getPartnerCredentials(context: BthContext): Promise<PartnerCredentials> {
-        // TODO: define how to authenticate with the partner service
+    public async getAuthCredentials(context: BthContext): Promise<AuthCredentials> {
+        // TODO: define how to authenticate with the auth service
         const urlWithParams = this.buildUrlWithParams(context);
         let response: Response;
         try {
             response = await fetch(urlWithParams, this.getRequestOptions());
         } catch (error) {
-            throw new PartnerServiceException('An unexpected error occurred', error);
+            throw new AuthServiceException('An unexpected error occurred', error);
         }
 
-        assert(response.ok, new PartnerAuthServiceException(response.statusText));
+        assert(response.ok, new AuthServiceRequestException(response.statusText));
 
         return await this.parseResponseToCredentials(response);
     }
 
     /**
-     * Parses the response object to extract partner credentials.
+     * Parses the response object to extract auth credentials.
      *
      * @param response - The response object to parse.
-     * @returns An object containing the URI redirect, method, and headers from the partner credentials.
+     * @returns An object containing the URI redirect, method, and headers from the auth credentials.
      */
-    private async parseResponseToCredentials(response: Response): Promise<PartnerCredentials> {
-        const credentials: PartnerCredentials = await response.json();
+    private async parseResponseToCredentials(response: Response): Promise<AuthCredentials> {
+        const credentials: AuthCredentials = await response.json();
         assert(
             credentials.uriRedirect,
-            new PartnerServiceException('Missing required field: uriRedirect')
+            new AuthServiceException('Missing required field: uriRedirect')
         );
-        assert(
-            credentials.method,
-            new PartnerServiceException('Missing required field: uriRedirect')
-        );
+        assert(credentials.method, new AuthServiceException('Missing required field: uriRedirect'));
 
         return {
             uriRedirect: credentials.uriRedirect,
@@ -88,8 +85,8 @@ class PartnerService {
      */
     private buildUrlWithParams(context: BthContext): string {
         const queryParams = new URLSearchParams(Object.entries(context)).toString();
-        return `${this.partnerAuthUri}?${queryParams}`;
+        return `${this.authUri}?${queryParams}`;
     }
 }
 
-export { PartnerService };
+export { AuthService };

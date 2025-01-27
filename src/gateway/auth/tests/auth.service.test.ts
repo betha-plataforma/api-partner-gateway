@@ -1,11 +1,11 @@
-import { PartnerService } from '../partner.service';
-import { PartnerAuthServiceException } from '../partner.errors';
+import { AuthService } from '../auth.service';
+import { AuthServiceRequestException } from '../auth.errors';
 import { BthContext } from '../../gateway.interfaces';
 
 global.fetch = jest.fn();
 
-describe('PartnerService', () => {
-    let partnerService: PartnerService;
+describe('AuthService', () => {
+    let authService: AuthService;
     const mockContext: BthContext = {
         database: 'testDB',
         entity: 'user',
@@ -13,13 +13,13 @@ describe('PartnerService', () => {
     };
 
     beforeEach(() => {
-        process.env.PARTNER_AUTH_URI = 'http://localhost:3000/mock/partner/auth';
-        partnerService = new PartnerService();
+        process.env.AUTH_URI = 'http://localhost:3000/mock/partner/auth';
+        authService = new AuthService();
         jest.clearAllMocks();
     });
 
     afterEach(() => {
-        delete process.env.PARTNER_AUTH_URI;
+        delete process.env.AUTH_URI;
     });
 
     test('should successfully get partner credentials', async () => {
@@ -35,7 +35,7 @@ describe('PartnerService', () => {
         };
         (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-        const credentials = await partnerService.getPartnerCredentials(mockContext);
+        const credentials = await authService.getAuthCredentials(mockContext);
 
         expect(global.fetch).toHaveBeenCalledWith(
             'http://localhost:3000/mock/partner/auth?database=testDB&entity=user&system=auth',
@@ -53,7 +53,7 @@ describe('PartnerService', () => {
         });
     });
 
-    test('should throw PartnerClientErrorException for 4xx errors', async () => {
+    test('should throw AuthServiceRequestException for 4xx errors', async () => {
         const mockResponse = {
             ok: false,
             status: 400,
@@ -61,12 +61,12 @@ describe('PartnerService', () => {
         };
         (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-        await expect(partnerService.getPartnerCredentials(mockContext)).rejects.toThrow(
-            PartnerAuthServiceException
+        await expect(authService.getAuthCredentials(mockContext)).rejects.toThrow(
+            AuthServiceRequestException
         );
     });
 
-    test('should throw PartnerServerErrorException for 5xx errors', async () => {
+    test('should throw AuthServiceRequestException for 5xx errors', async () => {
         const mockResponse = {
             ok: false,
             status: 500,
@@ -74,12 +74,12 @@ describe('PartnerService', () => {
         };
         (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-        await expect(partnerService.getPartnerCredentials(mockContext)).rejects.toThrow(
-            PartnerAuthServiceException
+        await expect(authService.getAuthCredentials(mockContext)).rejects.toThrow(
+            AuthServiceRequestException
         );
     });
 
-    test('should throw PartnerUnexpectedErrorException for other status codes', async () => {
+    test('should throw AuthServiceRequestException for other status codes', async () => {
         const mockResponse = {
             ok: false,
             status: 300,
@@ -87,14 +87,14 @@ describe('PartnerService', () => {
         };
         (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-        await expect(partnerService.getPartnerCredentials(mockContext)).rejects.toThrow(
-            PartnerAuthServiceException
+        await expect(authService.getAuthCredentials(mockContext)).rejects.toThrow(
+            AuthServiceRequestException
         );
     });
 
-    test('should throw Error when PARTNER_AUTH_URI is not defined', () => {
-        delete process.env.PARTNER_AUTH_URI;
+    test('should throw Error when AUTH_URI is not defined', () => {
+        delete process.env.AUTH_URI;
 
-        expect(() => new PartnerService()).toThrow('ENV PARTNER_AUTH_URI is not defined');
+        expect(() => new AuthService()).toThrow('ENV AUTH_URI is not defined');
     });
 });
