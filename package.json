@@ -10,8 +10,8 @@
   "scripts": {
     "start": "node ./src/server.ts",
     "test": "jest --bail",
-    "jest": "npx jest --bail --watchAll",
-    "jest-coverage": "jest --coverage",
+    "test:coverage": "jest --coverage",
+    "test:watch": "npx jest --bail --watchAll",
     "dev": "NODE_ENV=development nodemon -r dotenv/config ./src/server.ts dotenv_config_path=.env.development",
     "build": "tsc",
     "lint": "eslint .",
