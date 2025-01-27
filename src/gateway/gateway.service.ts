@@ -2,8 +2,6 @@ import jwksRsa from 'jwks-rsa';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { InvalidTokenException } from './gateway.errors';
 import { BthContext } from './gateway.interfaces';
-import { AuthCredentials } from './auth/auth.interfaces';
-import { AuthService } from './auth/auth.service';
 import { BthJwtPayload } from './gateway.interfaces';
 import assert from 'assert';
 
@@ -13,16 +11,14 @@ import assert from 'assert';
  */
 class GatewayService {
     private jwksClient: jwksRsa.JwksClient;
-    private authService: AuthService;
 
     /**
      * Constructor for the GatewayService class.
      */
-    constructor(authService: AuthService) {
+    constructor() {
         const jwksUri = process.env.JWKS_URI;
         assert(jwksUri, 'ENV JWKS_URI is not defined');
 
-        this.authService = authService;
         this.jwksClient = jwksRsa({
             jwksUri,
             cache: true,
@@ -33,28 +29,13 @@ class GatewayService {
     }
 
     /**
-     * Authenticates the request with the given JWT token on the JWKS endpoint,
-     * and returns the auth credentials from the auth service.
-     *
-     * @param token - The JWT token from the request headers.
-     * @returns A promise that resolves to the auth credentials.
-     * @throws An error if the token is invalid or cannot be verified.
-     */
-    public async auth(token: string): Promise<AuthCredentials> {
-        const context: BthContext = await this.extractContextFromJwt(token);
-
-        // TODO: cache the auth credentials by context
-        return await this.authService.getAuthCredentials(context);
-    }
-
-    /**
      * Extracts the context information from the JWT token.
      *
      * @param token - The JWT token to extract context from.
      * @returns The extracted context containing database, entity, and system.
      * @throws {InvalidTokenException} If the JWT is invalid or cannot be verified.
      */
-    private async extractContextFromJwt(token: string): Promise<BthContext> {
+    public async getContext(token: string): Promise<BthContext> {
         const jwtPayload = (await this.getJwtPayload(token)) as BthJwtPayload;
 
         return {

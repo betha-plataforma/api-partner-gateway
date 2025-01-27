@@ -8,7 +8,6 @@ import assert from 'assert';
  * Auth service.
  */
 // TODO: translate to portuguese
-// TODO: change to auth.service
 class AuthService {
     private authUri: string;
 
@@ -27,8 +26,9 @@ class AuthService {
      * @param context - The context from the JWT.
      * @returns A promise that resolves to the auth credentials.
      */
-    public async getAuthCredentials(context: BthContext): Promise<AuthCredentials> {
+    public async getCredentials(context: BthContext): Promise<AuthCredentials> {
         // TODO: define how to authenticate with the auth service
+        // TODO: cache credentials by context
         const urlWithParams = this.buildUrlWithParams(context);
         let response: Response;
         try {

@@ -4,6 +4,9 @@ import { BthContext } from '../../gateway.interfaces';
 
 global.fetch = jest.fn();
 
+// TODO: test all functionality on the borders of the AuthService class
+// make sure that the entry method is getCredentials and it returns Promise<AuthCredentials>
+// all other functionality should be private
 describe('AuthService', () => {
     let authService: AuthService;
     const mockContext: BthContext = {
@@ -35,7 +38,7 @@ describe('AuthService', () => {
         };
         (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-        const credentials = await authService.getAuthCredentials(mockContext);
+        const credentials = await authService.getCredentials(mockContext);
 
         expect(global.fetch).toHaveBeenCalledWith(
             'http://localhost:3000/mock/partner/auth?database=testDB&entity=user&system=auth',
@@ -61,7 +64,7 @@ describe('AuthService', () => {
         };
         (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-        await expect(authService.getAuthCredentials(mockContext)).rejects.toThrow(
+        await expect(authService.getCredentials(mockContext)).rejects.toThrow(
             AuthServiceRequestException
         );
     });
@@ -74,7 +77,7 @@ describe('AuthService', () => {
         };
         (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-        await expect(authService.getAuthCredentials(mockContext)).rejects.toThrow(
+        await expect(authService.getCredentials(mockContext)).rejects.toThrow(
             AuthServiceRequestException
         );
     });
@@ -87,7 +90,7 @@ describe('AuthService', () => {
         };
         (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-        await expect(authService.getAuthCredentials(mockContext)).rejects.toThrow(
+        await expect(authService.getCredentials(mockContext)).rejects.toThrow(
             AuthServiceRequestException
         );
     });

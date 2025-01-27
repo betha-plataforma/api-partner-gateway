@@ -5,6 +5,7 @@ import { GatewayValidationException, InvalidTokenException } from './gateway.err
 import { GatewayService } from './gateway.service';
 import AppConstants from '../app-constants';
 import { AuthCredentials } from './auth/auth.interfaces';
+import { AuthService } from './auth/auth.service';
 
 /**
  * Controller class for handling gateway-related functionality.
@@ -13,14 +14,16 @@ import { AuthCredentials } from './auth/auth.interfaces';
  */
 class GatewayController {
     private gatewayService: GatewayService;
+    private authService: AuthService;
 
     /**
      * Constructor for the GatewayController class.
      *
      * @param gatewayService The gateway service.
      */
-    constructor(gatewayService: GatewayService) {
+    constructor(gatewayService: GatewayService, authService: AuthService) {
         this.gatewayService = gatewayService;
+        this.authService = authService;
     }
 
     /**
@@ -32,9 +35,8 @@ class GatewayController {
             await this.verifyJwtToken(req);
             const token = req.headers[AppConstants.BTH_GATEWAY_ID_HEADER] as string;
 
-            // const context = await this.gatewayService.getContext(token);
-            // const credentials = await this.authService.auth(context);
-            const credentials = await this.gatewayService.auth(token);
+            const context = await this.gatewayService.getContext(token);
+            const credentials = await this.authService.getCredentials(context);
 
             this.applyAuthCredentialsToRequest(req, credentials);
             // Proxy the request to the partner application
