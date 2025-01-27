@@ -1,11 +1,11 @@
-import jwksRsa from "jwks-rsa";
-import jwt, { JwtPayload } from "jsonwebtoken";
-import { InvalidTokenException } from "./gateway.errors";
-import { BthContext } from "./gateway.interfaces";
-import { PartnerCredentials } from "./partner/partner.interfaces";
-import { PartnerService } from "./partner/partner.service";
-import { BthJwtPayload } from "./gateway.interfaces";
-import assert from "assert";
+import jwksRsa from 'jwks-rsa';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import { InvalidTokenException } from './gateway.errors';
+import { BthContext } from './gateway.interfaces';
+import { PartnerCredentials } from './partner/partner.interfaces';
+import { PartnerService } from './partner/partner.service';
+import { BthJwtPayload } from './gateway.interfaces';
+import assert from 'assert';
 
 /**
  * The GatewayService class provides methods for authenticating requests to the
@@ -20,7 +20,7 @@ class GatewayService {
      */
     constructor(partnerService: PartnerService) {
         const jwksUri = process.env.JWKS_URI;
-        assert(jwksUri, "ENV JWKS_URI is not defined");
+        assert(jwksUri, 'ENV JWKS_URI is not defined');
 
         this.partnerService = partnerService;
         this.jwksClient = jwksRsa({
@@ -54,12 +54,12 @@ class GatewayService {
      * @throws {InvalidTokenException} If the JWT is invalid or cannot be verified.
      */
     private async extractContextFromJwt(token: string): Promise<BthContext> {
-        const jwtPayload = await this.getJwtPayload(token) as BthJwtPayload;
+        const jwtPayload = (await this.getJwtPayload(token)) as BthJwtPayload;
 
         return {
             database: jwtPayload.client.attributes.database,
             entity: jwtPayload.client.attributes.entidade,
-            system: jwtPayload.client.attributes.sistema,
+            system: jwtPayload.client.attributes.sistema
         };
     }
 
@@ -73,15 +73,18 @@ class GatewayService {
     public async getJwtPayload(token: string): Promise<JwtPayload> {
         const decodedHeader = jwt.decode(token, { complete: true });
 
-        assert(decodedHeader?.header.kid, new InvalidTokenException("Token header is missing the key ID"));
+        assert(
+            decodedHeader?.header.kid,
+            new InvalidTokenException('Token header is missing the key ID')
+        );
 
         const signingKey = await this.getJwksSigningKey(decodedHeader.header.kid);
 
         try {
-            return jwt.verify(token, signingKey, { algorithms: ["RS256"] }) as JwtPayload;
+            return jwt.verify(token, signingKey, { algorithms: ['RS256'] }) as JwtPayload;
         } catch (error) {
             if (error instanceof jwt.TokenExpiredError) {
-                throw new InvalidTokenException("JWT validation failed: Token has expired", error);
+                throw new InvalidTokenException('JWT validation failed: Token has expired', error);
             }
             throw error;
         }
@@ -89,7 +92,7 @@ class GatewayService {
 
     /**
      * Obtains the public key from the JWKS endpoint.
-     * 
+     *
      * @param kid - The key ID to obtain.
      * @returns A promise that resolves to the public key.
      */

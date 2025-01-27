@@ -1,14 +1,14 @@
-import { Request, Response } from "express";
-import { check, validationResult } from "express-validator";
+import { Request, Response } from 'express';
+import { check, validationResult } from 'express-validator';
 import httpProxy from 'express-http-proxy';
-import { GatewayValidationException, InvalidTokenException } from "./gateway.errors";
-import { GatewayService } from "./gateway.service";
-import AppConstants from "../app-constants";
-import { PartnerCredentials } from "./partner/partner.interfaces";
+import { GatewayValidationException, InvalidTokenException } from './gateway.errors';
+import { GatewayService } from './gateway.service';
+import AppConstants from '../app-constants';
+import { PartnerCredentials } from './partner/partner.interfaces';
 
 /**
  * Controller class for handling gateway-related functionality.
- * 
+ *
  * @param gatewayService The gateway service.
  */
 class GatewayController {
@@ -16,7 +16,7 @@ class GatewayController {
 
     /**
      * Constructor for the GatewayController class.
-     * 
+     *
      * @param gatewayService The gateway service.
      */
     constructor(gatewayService: GatewayService) {
@@ -39,49 +39,52 @@ class GatewayController {
             this.proxyRequest(req, res, next, credentials.uriRedirect);
         } catch (error) {
             // TODO: Add proper logging
-            if (error instanceof GatewayValidationException || error instanceof InvalidTokenException) {
+            if (
+                error instanceof GatewayValidationException ||
+                error instanceof InvalidTokenException
+            ) {
                 res.status(error.statusCode).json({ error });
             } else {
-                res.status(500).json({ message: "Internal server error" });
+                res.status(500).json({ message: 'Internal server error' });
             }
         }
     }
 
     /**
      * Validates the JWT token in the request header.
-     * 
+     *
      * @param req - The request object.
      * @throws {GatewayValidationException} If the token is invalid.
      */
     private async verifyJwtToken(req: Request): Promise<void> {
-        await check(AppConstants.BTH_GATEWAY_ID_HEADER, "Invalid JWT token")
+        await check(AppConstants.BTH_GATEWAY_ID_HEADER, 'Invalid JWT token')
             .exists()
             .isJWT()
             .run(req);
 
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            throw new GatewayValidationException("Validation failed", errors.array());
+            throw new GatewayValidationException('Validation failed', errors.array());
         }
     }
 
     /**
      * Applies partner credentials to the incoming request.
-     * 
+     *
      * @param req - The request object.
      * @param credentials - The partner credentials.
      */
     private applyPartnerCredentialsToRequest(req: Request, credentials: PartnerCredentials): void {
         req.headers = {
             ...req.headers,
-            ...credentials.headers,
+            ...credentials.headers
         };
         req.method = credentials.method;
     }
 
     /**
      * Proxies the request to the partner application.
-     * 
+     *
      * @param req - The request object.
      * @param res - The response object.
      * @param next - The next middleware function.
@@ -89,7 +92,7 @@ class GatewayController {
      */
     private proxyRequest(req: Request, res: Response, next: any, uriRedirect: string): void {
         httpProxy(uriRedirect, {
-            proxyReqPathResolver: () => uriRedirect,
+            proxyReqPathResolver: () => uriRedirect
         })(req, res, next);
     }
 }

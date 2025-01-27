@@ -1,6 +1,6 @@
-import { PartnerService } from "../partner.service";
-import { PartnerAuthServiceException } from "../partner.errors";
-import { BthContext } from "../../gateway.interfaces";
+import { PartnerService } from '../partner.service';
+import { PartnerAuthServiceException } from '../partner.errors';
+import { BthContext } from '../../gateway.interfaces';
 
 global.fetch = jest.fn();
 
@@ -26,11 +26,12 @@ describe('PartnerService', () => {
         const mockResponse = {
             ok: true,
             status: 200,
-            json: () => Promise.resolve({
-                uriRedirect: 'http://localhost:3000/mock/partner/application1',
-                method: 'GET',
-                headers: {}
-            })
+            json: () =>
+                Promise.resolve({
+                    uriRedirect: 'http://localhost:3000/mock/partner/application1',
+                    method: 'GET',
+                    headers: {}
+                })
         };
         (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
@@ -60,9 +61,9 @@ describe('PartnerService', () => {
         };
         (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-        await expect(partnerService.getPartnerCredentials(mockContext))
-            .rejects
-            .toThrow(PartnerAuthServiceException);
+        await expect(partnerService.getPartnerCredentials(mockContext)).rejects.toThrow(
+            PartnerAuthServiceException
+        );
     });
 
     test('should throw PartnerServerErrorException for 5xx errors', async () => {
@@ -73,9 +74,9 @@ describe('PartnerService', () => {
         };
         (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-        await expect(partnerService.getPartnerCredentials(mockContext))
-            .rejects
-            .toThrow(PartnerAuthServiceException);
+        await expect(partnerService.getPartnerCredentials(mockContext)).rejects.toThrow(
+            PartnerAuthServiceException
+        );
     });
 
     test('should throw PartnerUnexpectedErrorException for other status codes', async () => {
@@ -86,15 +87,14 @@ describe('PartnerService', () => {
         };
         (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-        await expect(partnerService.getPartnerCredentials(mockContext))
-            .rejects
-            .toThrow(PartnerAuthServiceException);
+        await expect(partnerService.getPartnerCredentials(mockContext)).rejects.toThrow(
+            PartnerAuthServiceException
+        );
     });
 
     test('should throw Error when PARTNER_AUTH_URI is not defined', () => {
         delete process.env.PARTNER_AUTH_URI;
 
-        expect(() => new PartnerService())
-            .toThrow('ENV PARTNER_AUTH_URI is not defined');
+        expect(() => new PartnerService()).toThrow('ENV PARTNER_AUTH_URI is not defined');
     });
 });

@@ -1,10 +1,7 @@
-import { PartnerCredentials } from "./partner.interfaces";
-import { BthContext } from "../gateway.interfaces";
-import {
-    PartnerAuthServiceException,
-    PartnerServiceException
-} from "./partner.errors";
-import assert from "assert";
+import { PartnerCredentials } from './partner.interfaces';
+import { BthContext } from '../gateway.interfaces';
+import { PartnerAuthServiceException, PartnerServiceException } from './partner.errors';
+import assert from 'assert';
 
 /**
  * The PartnerService class provides methods for authenticating requests to the
@@ -18,13 +15,13 @@ class PartnerService {
      */
     constructor() {
         const partnerAuthUri = process.env.PARTNER_AUTH_URI;
-        assert(partnerAuthUri, "ENV PARTNER_AUTH_URI is not defined");
+        assert(partnerAuthUri, 'ENV PARTNER_AUTH_URI is not defined');
         this.partnerAuthUri = partnerAuthUri;
     }
 
     /**
      * Gets the partner credentials from the partner service.
-     * 
+     *
      * @param context - The context from the JWT.
      * @returns A promise that resolves to the partner credentials.
      */
@@ -35,7 +32,7 @@ class PartnerService {
         try {
             response = await fetch(urlWithParams, this.getRequestOptions());
         } catch (error) {
-            throw new PartnerServiceException("An unexpected error occurred", error);
+            throw new PartnerServiceException('An unexpected error occurred', error);
         }
 
         assert(response.ok, new PartnerAuthServiceException(response.statusText));
@@ -49,10 +46,16 @@ class PartnerService {
      * @param response - The response object to parse.
      * @returns An object containing the URI redirect, method, and headers from the partner credentials.
      */
-    private async parseResponseToCredentials(response: Response) {
+    private async parseResponseToCredentials(response: Response): Promise<PartnerCredentials> {
         const credentials: PartnerCredentials = await response.json();
-        assert(credentials.uriRedirect, new PartnerServiceException("Missing required field: uriRedirect"));
-        assert(credentials.method, new PartnerServiceException("Missing required field: uriRedirect"));
+        assert(
+            credentials.uriRedirect,
+            new PartnerServiceException('Missing required field: uriRedirect')
+        );
+        assert(
+            credentials.method,
+            new PartnerServiceException('Missing required field: uriRedirect')
+        );
 
         return {
             uriRedirect: credentials.uriRedirect,
@@ -68,9 +71,9 @@ class PartnerService {
      */
     private getRequestOptions(): RequestInit {
         return {
-            method: "GET",
+            method: 'GET',
             headers: {
-                "Content-Type": "application/json",
+                'Content-Type': 'application/json'
             }
         };
     }

@@ -13,7 +13,11 @@
     "jest": "npx jest --bail --watchAll",
     "jest-coverage": "jest --coverage",
     "dev": "NODE_ENV=development nodemon -r dotenv/config ./src/server.ts dotenv_config_path=.env.development",
-    "build": "tsc"
+    "build": "tsc",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\""
   },
   "keywords": [],
   "author": "",
@@ -33,6 +37,7 @@
     "@babel/core": "^7.26.0",
     "@babel/preset-env": "^7.26.0",
     "@babel/preset-typescript": "^7.26.0",
+    "@eslint/js": "^9.19.0",
     "@types/apicache": "^1.6.7",
     "@types/babel__generator": "^7.6.8",
     "@types/express": "^5.0.0",
@@ -40,12 +45,19 @@
     "@types/jest": "^29.5.14",
     "@types/node": "^22.10.2",
     "@types/supertest": "^6.0.2",
+    "@typescript-eslint/eslint-plugin": "^8.21.0",
+    "@typescript-eslint/parser": "^8.21.0",
     "babel-jest": "^29.7.0",
+    "eslint": "^9.19.0",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-prettier": "^5.2.3",
     "jest": "^29.7.0",
     "nodemon": "^3.1.9",
+    "prettier": "^3.4.2",
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.21.0"
   }
 }
