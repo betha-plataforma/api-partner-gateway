@@ -1,7 +1,7 @@
 import jwksRsa from "jwks-rsa";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { InvalidTokenException } from "./gateway.errors";
-import { RequestContext } from "./request-context.interface";
+import { BthContext } from "./bth-context.interface";
 import { PartnerCredentials } from "../partner/partner-credentials.interface";
 import { PartnerService } from "../partner/partner.service";
 import { BthJwtPayload } from "./bth-jwt-payload.interface";
@@ -42,23 +42,23 @@ class GatewayService {
     // TODO: Change the return type to the response object of the partner product
     // public async auth(req: Request): Promise<Response> {
     public async auth(token: string): Promise<PartnerCredentials> {
-        const jwtPayload: BthJwtPayload = await this.getJwtPayload(token) as BthJwtPayload;
-        const context: RequestContext = {
-            database: jwtPayload.client.attributes.database,
-            entity: jwtPayload.client.attributes.entidade,
-            system: jwtPayload.client.attributes.sistema
-        }
+        // const jwtPayload: BthJwtPayload = await this.getJwtPayload(token) as BthJwtPayload;
+        // const context: RequestContext = {
+        //     database: jwtPayload.client.attributes.database,
+        //     entity: jwtPayload.client.attributes.entidade,
+        //     system: jwtPayload.client.attributes.sistema
+        // }
         // const context: RequestContext = await this.getJwtPayload(token) as RequestContext;
         // const context: RequestContext = {
         //     database: jwtPayload.client.attributes.database,
         //     entity: jwtPayload.client.attributes.entidade,
         //     system: jwtPayload.client.attributes.sistema
         // }
-        // const context: RequestContext = {
-        //     database: 'database',
-        //     entity: 'entity',
-        //     system: 'system'
-        // }
+        const context: BthContext = {
+            database: 'database',
+            entity: 'entity',
+            system: 'system'
+        }
 
         return await this.partnerService.getPartnerCredentials(context);
     }

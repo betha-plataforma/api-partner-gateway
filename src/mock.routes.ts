@@ -19,7 +19,13 @@ router.use("/betha/redirect-to-application1-trigger", async (_req: Request, res:
 });
 
 
-router.use("/partner/auth", (_req: Request, res: Response): void => {
+router.use("/partner/auth", (req: Request, res: Response): void => {
+    if (!req.query.database || !req.query.system || !req.query.entity) {
+        res.status(400).json({
+            "message": "Bad Request"
+        });
+    }
+
     res.status(200).json({
         "uriRedirect": "http://localhost:3000/mock/partner/application1",
         "method": "GET",

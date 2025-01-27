@@ -1,16 +1,12 @@
 import { PartnerService } from "../../src/partner/partner.service";
-import {
-    PartnerClientErrorException,
-    PartnerServerErrorException,
-    PartnerUnexpectedErrorException
-} from "../../src/partner/partner.errors";
-import { RequestContext } from "../../src/gateway/request-context.interface";
+import { PartnerAuthServiceException } from "../../src/partner/partner.errors";
+import { BthContext } from "../../src/gateway/bth-context.interface";
 
 global.fetch = jest.fn();
 
 describe('PartnerService', () => {
     let partnerService: PartnerService;
-    const mockContext: RequestContext = {
+    const mockContext: BthContext = {
         database: 'testDB',
         entity: 'user',
         system: 'auth'
@@ -40,7 +36,7 @@ describe('PartnerService', () => {
         const credentials = await partnerService.getPartnerCredentials(mockContext);
 
         expect(global.fetch).toHaveBeenCalledWith(
-            'http://localhost:3000/mock/partner/auth',
+            'http://localhost:3000/mock/partner/auth?database=testDB&entity=user&system=auth',
             expect.objectContaining({
                 method: 'GET',
                 headers: {
@@ -64,7 +60,7 @@ describe('PartnerService', () => {
 
         await expect(partnerService.getPartnerCredentials(mockContext))
             .rejects
-            .toThrow(PartnerClientErrorException);
+            .toThrow(PartnerAuthServiceException);
     });
 
     test('should throw PartnerServerErrorException for 5xx errors', async () => {
@@ -77,7 +73,7 @@ describe('PartnerService', () => {
 
         await expect(partnerService.getPartnerCredentials(mockContext))
             .rejects
-            .toThrow(PartnerServerErrorException);
+            .toThrow(PartnerAuthServiceException);
     });
 
     test('should throw PartnerUnexpectedErrorException for other status codes', async () => {
@@ -90,7 +86,7 @@ describe('PartnerService', () => {
 
         await expect(partnerService.getPartnerCredentials(mockContext))
             .rejects
-            .toThrow(PartnerUnexpectedErrorException);
+            .toThrow(PartnerAuthServiceException);
     });
 
     test('should throw Error when PARTNER_AUTH_URI is not defined', () => {

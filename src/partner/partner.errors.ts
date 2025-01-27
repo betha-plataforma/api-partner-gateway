@@ -1,34 +1,18 @@
 // TODO: define a standard custom exception
-export class PartnerClientErrorException extends Error {
-    public statusCode: number;
+export class PartnerAuthServiceException extends Error {
+    public errors?: any;
 
-    constructor(message: string, statusCode: number) {
+    constructor(message: string, errors?: any) {
         super(message);
-        this.statusCode = statusCode;
-    }
-}
-
-export class PartnerServerErrorException extends Error {
-    public statusCode: number;
-
-    constructor(message: string, statusCode: number) {
-        super(message);
-        this.statusCode = statusCode;
-    }
-}
-
-export class PartnerUnexpectedErrorException extends Error {
-    public statusCode: number;
-
-    constructor(message: string, statusCode: number) {
-        super(message);
-        this.statusCode = statusCode;
+        this.errors = errors;
     }
 }
 
 export class PartnerServiceException extends Error {
+    public errors?: any;
 
-    constructor(message: string) {
+    constructor(message: string, errors?: any) {
         super(message);
+        this.errors = errors;
     }
 }

@@ -1,9 +1,7 @@
 import { PartnerCredentials } from "./partner-credentials.interface";
-import { RequestContext } from "../gateway/request-context.interface";
+import { BthContext } from "../gateway/bth-context.interface";
 import {
-    PartnerClientErrorException,
-    PartnerServerErrorException,
-    PartnerUnexpectedErrorException,
+    PartnerAuthServiceException,
     PartnerServiceException
 } from "../partner/partner.errors";
 
@@ -29,41 +27,26 @@ class PartnerService {
      * @param context - The context from the JWT.
      * @returns A promise that resolves to the partner credentials.
      */
-    public async getPartnerCredentials(context: RequestContext): Promise<PartnerCredentials> {
-        return fetch(this.partnerAuthUri, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        }).then(response => {
-            if (!response?.ok) {
-                if (response.status >= 400 && response.status < 500) {
-                    throw new PartnerClientErrorException(
-                        `Client error: ${response.status} - ${response.statusText}`, response.status
-                    );
-                } else if (response.status >= 500) {
-                    throw new PartnerServerErrorException(
-                        `Server error: ${response.status} - ${response.statusText}`, response.status
-                    );
-                } else {
-                    throw new PartnerUnexpectedErrorException(
-                        `Unexpected error: ${response.status} - ${response.statusText}`, response.status
-                    );
+    public async getPartnerCredentials(context: BthContext): Promise<PartnerCredentials> {
+        const queryParams = new URLSearchParams(Object.entries(context)).toString();
+        const urlWithParams = `${this.partnerAuthUri}?${queryParams}`;
+        let response: Response;
+        try {
+            response = await fetch(urlWithParams, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
                 }
-            }
-            return response.json();
-        }).then(data => {
-            return data as PartnerCredentials;
-        }).catch(error => {
-            if (error instanceof
-                PartnerClientErrorException ||
-                PartnerServerErrorException ||
-                PartnerUnexpectedErrorException) {
-                throw error;
-            }
+            });
+        } catch (error) {
+            throw new PartnerServiceException("An unexpected error occurred", error);
+        }
 
-            throw new PartnerServiceException(error.message);
-        });
+        if (!response.ok) {
+            throw new PartnerAuthServiceException(response.statusText);
+        }
+
+        return await response.json() as PartnerCredentials;
     }
 }
 

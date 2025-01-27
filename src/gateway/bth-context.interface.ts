@@ -1,4 +1,4 @@
-export interface RequestContext {
+export interface BthContext {
     database: string;
     entity: string;
     system: string;

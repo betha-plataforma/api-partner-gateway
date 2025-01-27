@@ -4,7 +4,7 @@ import app from "../src/app";
 describe("Partner Mock routes", () => {
 
     test("Get Partner Mock auth should be ok", async () => {
-        const res = await request(app).post("/mock/partner/auth");
+        const res = await request(app).post("/mock/partner/auth?database=testDB&entity=user&system=auth");
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
             "uriRedirect": "http://localhost:3000/mock/partner/application1",
