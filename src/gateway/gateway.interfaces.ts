@@ -13,9 +13,11 @@ export interface BthJwtPayload {
     };
     user: {
         id: string;
-        // TODO: Add the missing properties
         accesses: Array<{
-            [key: string]: any;
+            systemId: string;
+            entityId: string;
+            databaseId: string;
+            userId: string;
         }>;
     };
     expiresIn: number;

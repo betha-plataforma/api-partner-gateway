@@ -42,7 +42,6 @@ class GatewayController {
             // Proxy the request to the partner application
             this.proxyRequest(req, res, next, credentials.uriRedirect);
         } catch (error) {
-            // TODO: Add proper logging
             if (
                 error instanceof GatewayValidationException ||
                 error instanceof InvalidTokenException
