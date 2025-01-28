@@ -34,7 +34,7 @@ O projeto **api-partner-gateway** é uma aplicação **Node.js** que atua como u
 
 ### **Diagrama de Sequência**
 
-> **TODO**: Adicionar diagrama de sequência para ilustrar o fluxo.
+![Diagrama de Sequência](docs/diagrama-de-sequencia.png)
 
 ---
 
