@@ -1,63 +1,40 @@
-import NodeCache from 'node-cache';
 import { InMemoryCache } from '../in-memory.cache.impl';
-
-jest.mock('node-cache');
+import { InMemoryCacheConfig } from '../in-memory.cache.config';
 
 describe('InMemoryCache', () => {
     let cache: InMemoryCache;
-    let nodeCacheInstance: jest.Mocked<NodeCache>;
 
     beforeEach(() => {
-        nodeCacheInstance = new NodeCache() as jest.Mocked<NodeCache>;
-        (NodeCache as unknown as jest.Mock).mockImplementation(() => nodeCacheInstance);
+        process.env.IN_MEMORY_CACHE_TTL = '3600';
+        InMemoryCacheConfig.setup();
         cache = new InMemoryCache();
     });
 
-    afterEach(() => {
-        jest.clearAllMocks();
+    it('should store and retrieve a value', async () => {
+        await cache.set('foo', 'bar');
+        const value = await cache.get('foo');
+        expect(value).toEqual('bar');
     });
 
-    it('should store a value in the cache', async () => {
-        const key = 'testKey';
-        const value = 'testValue';
-
-        await cache.set(key, value);
-
-        expect(nodeCacheInstance.set).toHaveBeenCalledWith(key, value);
+    it('should return null for a missing key', async () => {
+        const value = await cache.get('missingKey');
+        expect(value).toBeNull();
     });
 
-    it('should retrieve a value from the cache', async () => {
-        const key = 'testKey';
-        const value = 'testValue';
-        nodeCacheInstance.get.mockReturnValue(value);
-
-        const result = await cache.get(key);
-
-        expect(nodeCacheInstance.get).toHaveBeenCalledWith(key);
-        expect(result).toBe(value);
+    it('should clear a specific key', async () => {
+        await cache.set('keyToClear', 'value');
+        await cache.clear('keyToClear');
+        const value = await cache.get('keyToClear');
+        expect(value).toBeNull();
     });
 
-    it('should return null if the key does not exist in the cache', async () => {
-        const key = 'nonExistentKey';
-        nodeCacheInstance.get.mockReturnValue(undefined);
+    it('should clear all keys', async () => {
+        await cache.set('key1', 'value1');
+        await cache.set('key2', 'value2');
 
-        const result = await cache.get(key);
-
-        expect(nodeCacheInstance.get).toHaveBeenCalledWith(key);
-        expect(result).toBeNull();
-    });
-
-    it('should remove a value from the cache', async () => {
-        const key = 'testKey';
-
-        await cache.clear(key);
-
-        expect(nodeCacheInstance.del).toHaveBeenCalledWith(key);
-    });
-
-    it('should clear all values from the cache', async () => {
         await cache.clearAll();
 
-        expect(nodeCacheInstance.flushAll).toHaveBeenCalled();
+        expect(await cache.get('key1')).toBeNull();
+        expect(await cache.get('key2')).toBeNull();
     });
 });

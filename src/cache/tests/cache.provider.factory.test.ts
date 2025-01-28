@@ -1,8 +1,14 @@
 import { CacheProviderFactory } from '../cache.provider.factory';
+import { InMemoryCacheConfig } from '../in-memory.cache.config';
 import { InMemoryCache } from '../in-memory.cache.impl';
 import { RedisCache } from '../redis.cache.impl';
 
 describe('CacheProviderFactory', () => {
+    beforeAll(() => {
+        process.env.IN_MEMORY_CACHE_TTL = '3600';
+        InMemoryCacheConfig.setup();
+    });
+
     afterEach(() => {
         jest.resetModules();
         delete process.env.USE_REDIS;

@@ -1,3 +1,4 @@
+import { CacheProvider } from './cache.provider';
 import { InMemoryCache } from './in-memory.cache.impl';
 import { RedisCache } from './redis.cache.impl';
 

@@ -2,6 +2,7 @@ import express, { Application, Request, Response } from 'express';
 import { router as gatewayRoutes } from './gateway/gateway.routes';
 import { router as mockRoutes } from './mock.routes';
 import { router as cacheRoutes } from './cache/cache.routes';
+import { InMemoryCacheConfig } from './cache/in-memory.cache.config';
 
 const app: Application = express();
 
@@ -25,5 +26,9 @@ if (process.env.NODE_ENV !== 'production') {
 app.use('/alive', (_req: Request, res: Response): void => {
     res.status(200).send('yes');
 });
+
+// Initialize the in-memory cache instance
+// if not using Redis
+InMemoryCacheConfig.setup();
 
 export default app;

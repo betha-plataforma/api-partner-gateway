@@ -1,5 +1,6 @@
 import NodeCache from 'node-cache';
 import { CacheProvider } from './cache.provider';
+import { InMemoryCacheConfig } from './in-memory.cache.config';
 
 /**
  * Implementation of the CacheProvider interface using an in-memory cache.
@@ -14,7 +15,7 @@ class InMemoryCache implements CacheProvider {
      * Initializes the in-memory cache.
      */
     constructor() {
-        this.inMemoryCache = new NodeCache();
+        this.inMemoryCache = InMemoryCacheConfig.getInstance();
     }
 
     /**
