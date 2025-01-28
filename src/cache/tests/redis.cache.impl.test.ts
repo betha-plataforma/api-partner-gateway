@@ -1,8 +1,8 @@
 import { RedisCache } from '../redis.cache.impl';
 import { RedisClientType } from 'redis';
-import { getRedisClient } from '../../redis-config';
+import { getRedisClient } from '../redis.cache.config';
 
-jest.mock('../../redis-config');
+jest.mock('../redis.cache.config');
 
 describe('RedisCache', () => {
     let redisClientMock: jest.Mocked<RedisClientType>;

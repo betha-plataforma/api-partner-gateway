@@ -1,5 +1,5 @@
 import { RedisClientType } from 'redis';
-import { getRedisClient } from '../redis-config';
+import { getRedisClient } from './redis.cache.config';
 import { CacheProvider } from './cache.provider';
 import assert from 'assert';
 
