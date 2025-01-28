@@ -1,8 +1,8 @@
 import express, { Application, Request, Response } from 'express';
-import { router as gatewayRoutes } from './gateway/gateway.routes';
-import { router as mockRoutes } from './mock.routes';
-import { router as cacheRoutes } from './cache/cache.routes';
-import { InMemoryCacheConfig } from './cache/in-memory.cache.config';
+import { router as gatewayRoutes } from './gateway/gateway.routes.js';
+import { router as mockRoutes } from './mock.routes.js';
+import { router as cacheRoutes } from './cache/cache.routes.js';
+import { InMemoryCacheConfig } from './cache/in-memory.cache.config.js';
 
 const app: Application = express();
 

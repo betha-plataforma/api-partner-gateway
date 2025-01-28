@@ -1,11 +1,11 @@
+import httpProxy from 'express-http-proxy';
 import { Request, Response } from 'express';
 import { check, validationResult } from 'express-validator';
-import httpProxy from 'express-http-proxy';
-import { GatewayValidationException, InvalidTokenException } from './gateway.errors';
-import { GatewayService } from './gateway.service';
-import AppConstants from '../app-constants';
-import { AuthCredentials } from './auth/auth.interfaces';
-import { AuthImpl } from './auth/auth.impl';
+import { GatewayService } from './gateway.service.js';
+import AppConstants from '../app-constants.js';
+import { AuthCredentials } from './auth/auth.interfaces.js';
+import { AuthImpl } from './auth/auth.impl.js';
+import { GatewayValidationException, InvalidTokenException } from './gateway.errors.js';
 
 /**
  * Controller class for handling gateway-related functionality.

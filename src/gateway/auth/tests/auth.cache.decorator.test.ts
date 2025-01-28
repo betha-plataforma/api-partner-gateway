@@ -1,9 +1,9 @@
-import { CachingAuthProvider } from '../auth.cache.decorator';
-import { AuthProvider } from '../auth.provider';
-import { AuthCredentials } from '../auth.interfaces';
-import { BthContext } from '../../gateway.interfaces';
-import { CacheProvider } from '../../../cache/cache.provider';
-import { CacheProviderFactory } from '../../../cache/cache.provider.factory';
+import { CachingAuthProvider } from '../auth.cache.decorator.js';
+import { AuthProvider } from '../auth.provider.js';
+import { AuthCredentials } from '../auth.interfaces.js';
+import { BthContext } from '../../gateway.interfaces.js';
+import { CacheProvider } from '../../../cache/cache.provider.js';
+import { CacheProviderFactory } from '../../../cache/cache.provider.factory.js';
 
 jest.mock('../../../cache/cache.provider.factory');
 

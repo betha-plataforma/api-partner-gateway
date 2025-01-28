@@ -1,9 +1,9 @@
-import { AuthProvider } from './auth.provider';
-import { AuthCredentials } from './auth.interfaces';
-import { BthContext } from '../gateway.interfaces';
-import { CacheProvider } from '../../cache/cache.provider';
-import { CacheProviderFactory } from '../../cache/cache.provider.factory';
-import { AuthImpl } from './auth.impl';
+import { AuthImpl } from './auth.impl.js';
+import { AuthProvider } from './auth.provider.js';
+import { BthContext } from '../gateway.interfaces.js';
+import { AuthCredentials } from './auth.interfaces.js';
+import { CacheProvider } from '../../cache/cache.provider.js';
+import { CacheProviderFactory } from '../../cache/cache.provider.factory.js';
 
 /**
  * CachingAuthProvider é uma implementação da interface AuthProvider que adiciona capacidades de cache

@@ -1,5 +1,5 @@
 import { RedisClientType } from 'redis';
-import { CacheProvider } from './cache.provider';
+import { CacheProvider } from './cache.provider.js';
 
 /**
  * Implementation of the CacheProvider interface using Redis as the caching mechanism.

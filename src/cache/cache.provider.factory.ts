@@ -1,7 +1,7 @@
-import { CacheProvider } from './cache.provider';
-import { InMemoryCache } from './in-memory.cache.impl';
-import { getRedisClient } from './redis.cache.config';
-import { RedisCache } from './redis.cache.impl';
+import { CacheProvider } from './cache.provider.js';
+import { InMemoryCache } from './in-memory.cache.impl.js';
+import { getRedisClient } from './redis.cache.config.js';
+import { RedisCache } from './redis.cache.impl.js';
 
 /**
  * Factory class for creating cache providers.

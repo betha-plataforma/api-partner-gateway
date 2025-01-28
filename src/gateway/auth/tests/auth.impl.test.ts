@@ -1,7 +1,7 @@
-import { AuthImpl } from '../auth.impl';
-import { BthContext } from '../../gateway.interfaces';
-import { AuthCredentials } from '../auth.interfaces';
-import { AuthImplRequestException, AuthImplException } from '../auth.errors';
+import { AuthImpl } from '../auth.impl.js';
+import { BthContext } from '../../gateway.interfaces.js';
+import { AuthCredentials } from '../auth.interfaces.js';
+import { AuthImplRequestException, AuthImplException } from '../auth.errors.js';
 
 describe('AuthImpl (native fetch)', () => {
     let authImpl: AuthImpl;

@@ -1,5 +1,5 @@
-import assert from 'assert';
 import { createClient, RedisClientType } from 'redis';
+import assert from 'assert';
 
 let redisClient: RedisClientType | null = null;
 

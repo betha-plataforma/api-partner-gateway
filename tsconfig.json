@@ -1,14 +1,15 @@
 {
     "exclude": ["./coverage", "./dist", "jest.config.ts", "babel.config.js", "eslint.config.js"],
     "ts-node": {
-        "transpileOnly": true,
+        "esm": true,
+        "experimentalSpecifier": true,
         "files": true
     },
     "compilerOptions": {
-        "target": "es2016",
-        "module": "commonjs",
+        "target": "ESNext",
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
         "rootDir": "./src",
-        "moduleResolution": "node",
         "checkJs": true,
         "outDir": "./dist",
         "esModuleInterop": true,

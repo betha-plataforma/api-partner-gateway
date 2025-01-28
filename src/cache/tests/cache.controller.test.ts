@@ -1,7 +1,7 @@
-import { CacheController } from '../cache.controller';
-import { CacheProviderFactory } from '../cache.provider.factory';
-import { Request, Response } from 'express';
 import { jest } from '@jest/globals';
+import { Request, Response } from 'express';
+import { CacheController } from '../cache.controller.js';
+import { CacheProviderFactory } from '../cache.provider.factory.js';
 
 jest.mock('../cache.provider.factory');
 

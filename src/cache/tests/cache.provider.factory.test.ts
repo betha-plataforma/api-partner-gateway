@@ -1,9 +1,9 @@
 // cache.provider.factory.spec.ts (example filename)
-import { CacheProviderFactory } from '../cache.provider.factory';
-import { InMemoryCache } from '../in-memory.cache.impl';
-import { RedisCache } from '../redis.cache.impl';
-import { getRedisClient } from '../redis.cache.config';
-import { InMemoryCacheConfig } from '../in-memory.cache.config';
+import { CacheProviderFactory } from '../cache.provider.factory.js';
+import { InMemoryCache } from '../in-memory.cache.impl.js';
+import { RedisCache } from '../redis.cache.impl.js';
+import { getRedisClient } from '../redis.cache.config.js';
+import { InMemoryCacheConfig } from '../in-memory.cache.config.js';
 
 jest.mock('../redis.cache.config', () => {
     const originalModule = jest.requireActual('../redis.cache.config');

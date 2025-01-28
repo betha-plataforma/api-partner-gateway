@@ -1,9 +1,9 @@
 import jwt from 'jsonwebtoken';
-import { GatewayController } from '../gateway.controller';
-import { jest } from '@jest/globals';
-import { GatewayService } from '../gateway.service';
 import { Request, Response } from 'express';
-import { AuthImpl } from '../auth/auth.impl';
+import { jest } from '@jest/globals';
+import { GatewayController } from '../gateway.controller.js';
+import { GatewayService } from '../gateway.service.js';
+import { AuthImpl } from '../auth/auth.impl.js';
 
 describe('Gateway routes', () => {
     let secretKey: string;

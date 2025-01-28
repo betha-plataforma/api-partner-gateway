@@ -1,5 +1,5 @@
-import { InMemoryCache } from '../in-memory.cache.impl';
-import { InMemoryCacheConfig } from '../in-memory.cache.config';
+import { InMemoryCache } from '../in-memory.cache.impl.js';
+import { InMemoryCacheConfig } from '../in-memory.cache.config.js';
 
 describe('InMemoryCache', () => {
     let cache: InMemoryCache;

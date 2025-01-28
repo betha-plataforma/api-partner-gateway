@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import AppConstants from './app-constants';
+import AppConstants from './app-constants.js';
 
 const router = Router();
 

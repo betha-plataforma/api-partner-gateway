@@ -1,8 +1,8 @@
-import { AuthProvider } from './auth.provider';
-import { AuthCredentials } from './auth.interfaces';
-import { BthContext } from '../gateway.interfaces';
-import { AuthImplRequestException, AuthImplException } from './auth.errors';
 import assert from 'assert';
+import { AuthProvider } from './auth.provider.js';
+import { AuthCredentials } from './auth.interfaces.js';
+import { BthContext } from '../gateway.interfaces.js';
+import { AuthImplRequestException, AuthImplException } from './auth.errors.js';
 
 /**
  * A classe AuthImpl fornece métodos para interagir com um serviço de autenticação.

@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { CacheController } from './cache.controller';
+import { CacheController } from './cache.controller.js';
 
 const router = Router();
 

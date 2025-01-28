@@ -1,5 +1,5 @@
-import { BthContext } from '../gateway.interfaces';
-import { AuthCredentials } from './auth.interfaces';
+import { BthContext } from '../gateway.interfaces.js';
+import { AuthCredentials } from './auth.interfaces.js';
 
 /**
  * Interface representing a auth provider.

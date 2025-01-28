@@ -1,8 +1,8 @@
 import jwksRsa from 'jwks-rsa';
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { InvalidTokenException } from './gateway.errors';
-import { BthContext } from './gateway.interfaces';
-import { BthJwtPayload } from './gateway.interfaces';
+import { InvalidTokenException } from './gateway.errors.js';
+import { BthContext } from './gateway.interfaces.js';
+import { BthJwtPayload } from './gateway.interfaces.js';
 import assert from 'assert';
 
 /**

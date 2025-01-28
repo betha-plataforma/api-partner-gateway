@@ -1,6 +1,6 @@
-import { RedisCache } from '../redis.cache.impl';
 import type { RedisClientType } from 'redis';
-import { CacheProvider } from '../cache.provider';
+import { RedisCache } from '../redis.cache.impl.js';
+import { CacheProvider } from '../cache.provider.js';
 
 describe('RedisCache', () => {
     let mockRedisClient: jest.Mocked<RedisClientType>;

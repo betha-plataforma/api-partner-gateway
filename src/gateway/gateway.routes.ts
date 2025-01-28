@@ -1,8 +1,8 @@
 import { Router, Request, Response } from 'express';
-import { GatewayController } from './gateway.controller';
-import { GatewayService } from './gateway.service';
-import { AuthImpl } from './auth/auth.impl';
-import { CachingAuthProvider } from './auth/auth.cache.decorator';
+import { GatewayController } from './gateway.controller.js';
+import { GatewayService } from './gateway.service.js';
+import { AuthImpl } from './auth/auth.impl.js';
+import { CachingAuthProvider } from './auth/auth.cache.decorator.js';
 
 const router = Router();
 

@@ -1,5 +1,5 @@
-import { CacheProviderFactory } from './cache.provider.factory';
 import { Request, Response } from 'express';
+import { CacheProviderFactory } from './cache.provider.factory.js';
 
 /**
  * CacheController class provides methods to manage and clear cache data.

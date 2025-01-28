@@ -1,6 +1,6 @@
 import NodeCache from 'node-cache';
-import { CacheProvider } from './cache.provider';
-import { InMemoryCacheConfig } from './in-memory.cache.config';
+import { CacheProvider } from './cache.provider.js';
+import { InMemoryCacheConfig } from './in-memory.cache.config.js';
 
 /**
  * Implementation of the CacheProvider interface using an in-memory cache.
