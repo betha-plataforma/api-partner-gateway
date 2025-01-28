@@ -11,8 +11,7 @@
   "scripts": {
     "test": "jest --bail",
     "test:coverage": "jest --coverage",
-    "test:watch": "npx jest --bail --watchAll",
-    "start": "node --loader ts-node/esm ./src/server.ts",
+    "test:watch": "jest --bail --watchAll",
     "dev": "NODE_ENV=development tsx watch -r dotenv/config src/server.ts dotenv_config_path=.env.development",
     "build": "tsc",
     "lint": "eslint .",
