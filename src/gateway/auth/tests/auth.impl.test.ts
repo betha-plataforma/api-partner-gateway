@@ -20,7 +20,7 @@ describe('AuthImpl (native fetch)', () => {
         jest.restoreAllMocks();
     });
 
-    it('fetches new credentials and caches them if not in cache', async () => {
+    test('fetches new credentials and caches them if not in cache', async () => {
         const mockCredentials: AuthCredentials = {
             uriRedirect: 'http://fetched',
             method: 'POST',
@@ -43,7 +43,7 @@ describe('AuthImpl (native fetch)', () => {
         expect(result).toEqual(mockCredentials);
     });
 
-    it('throws AuthImplException if fetch rejects', async () => {
+    test('throws AuthImplException if fetch rejects', async () => {
         fetchSpy.mockRejectedValueOnce(new Error('Network error'));
 
         const context: BthContext = {
@@ -56,7 +56,7 @@ describe('AuthImpl (native fetch)', () => {
         await expect(authImpl.auth(context)).rejects.toThrow('Ocorreu um erro inesperado');
     });
 
-    it('throws AuthImplRequestException if response is not ok', async () => {
+    test('throws AuthImplRequestException if response is not ok', async () => {
         fetchSpy.mockResolvedValueOnce({
             ok: false,
             statusText: 'Not Found'
@@ -71,7 +71,7 @@ describe('AuthImpl (native fetch)', () => {
         await expect(authImpl.auth(context)).rejects.toThrow(AuthImplRequestException);
     });
 
-    it('throws AuthImplException if required fields are missing', async () => {
+    test('throws AuthImplException if required fields are missing', async () => {
         const invalidCredentials = {
             method: 'GET',
             headers: { 'X-Test': 'test-header' }

@@ -1,5 +1,6 @@
 import { CacheProvider } from './cache.provider';
 import { InMemoryCache } from './in-memory.cache.impl';
+import { getRedisClient } from './redis.cache.config';
 import { RedisCache } from './redis.cache.impl';
 
 /**
@@ -16,7 +17,7 @@ class CacheProviderFactory {
     static createCacheProvider(): CacheProvider {
         const useRedis = process.env.USE_REDIS === 'true';
         if (useRedis) {
-            return new RedisCache();
+            return new RedisCache(getRedisClient());
         }
         return new InMemoryCache();
     }

@@ -10,25 +10,25 @@ describe('InMemoryCache', () => {
         cache = new InMemoryCache();
     });
 
-    it('should store and retrieve a value', async () => {
+    test('should store and retrieve a value', async () => {
         await cache.set('foo', 'bar');
         const value = await cache.get('foo');
         expect(value).toEqual('bar');
     });
 
-    it('should return null for a missing key', async () => {
+    test('should return null for a missing key', async () => {
         const value = await cache.get('missingKey');
         expect(value).toBeNull();
     });
 
-    it('should clear a specific key', async () => {
+    test('should clear a specific key', async () => {
         await cache.set('keyToClear', 'value');
         await cache.clear('keyToClear');
         const value = await cache.get('keyToClear');
         expect(value).toBeNull();
     });
 
-    it('should clear all keys', async () => {
+    test('should clear all keys', async () => {
         await cache.set('key1', 'value1');
         await cache.set('key2', 'value2');
 

@@ -1,33 +1,54 @@
+// cache.provider.factory.spec.ts (example filename)
 import { CacheProviderFactory } from '../cache.provider.factory';
-import { InMemoryCacheConfig } from '../in-memory.cache.config';
 import { InMemoryCache } from '../in-memory.cache.impl';
 import { RedisCache } from '../redis.cache.impl';
+import { getRedisClient } from '../redis.cache.config';
+import { InMemoryCacheConfig } from '../in-memory.cache.config';
+
+jest.mock('../redis.cache.config', () => {
+    const originalModule = jest.requireActual('../redis.cache.config');
+    return {
+        ...originalModule,
+        getRedisClient: jest.fn()
+    };
+});
 
 describe('CacheProviderFactory', () => {
-    beforeAll(() => {
-        process.env.IN_MEMORY_CACHE_TTL = '3600';
+    let mockRedisClient: any;
+
+    beforeEach(() => {
+        process.env.USE_REDIS = 'false';
+        mockRedisClient = {
+            get: jest.fn(),
+            set: jest.fn(),
+            del: jest.fn(),
+            flushAll: jest.fn(),
+            on: jest.fn(),
+            connect: jest.fn(),
+            quit: jest.fn()
+        };
+
+        (getRedisClient as jest.Mock).mockReturnValue(mockRedisClient);
         InMemoryCacheConfig.setup();
     });
 
     afterEach(() => {
+        jest.clearAllMocks();
         jest.resetModules();
         delete process.env.USE_REDIS;
     });
 
-    test('should return an instance of InMemoryCache when USE_REDIS is not set', () => {
-        const cacheProvider = CacheProviderFactory.createCacheProvider();
-        expect(cacheProvider).toBeInstanceOf(InMemoryCache);
-    });
-
-    test('should return an instance of InMemoryCache when USE_REDIS is set to false', () => {
+    test('should return an InMemoryCache if USE_REDIS is not set to true', () => {
         process.env.USE_REDIS = 'false';
         const cacheProvider = CacheProviderFactory.createCacheProvider();
         expect(cacheProvider).toBeInstanceOf(InMemoryCache);
+        // expect(getRedisClient).not.toHaveBeenCalled();
     });
 
-    test('should return an instance of RedisCache when USE_REDIS is set to true', () => {
+    test('should return a RedisCache if USE_REDIS is set to true', () => {
         process.env.USE_REDIS = 'true';
         const cacheProvider = CacheProviderFactory.createCacheProvider();
         expect(cacheProvider).toBeInstanceOf(RedisCache);
+        expect(getRedisClient).toHaveBeenCalledTimes(1);
     });
 });

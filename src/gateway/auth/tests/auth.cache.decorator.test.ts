@@ -41,7 +41,7 @@ describe('CachingAuthProvider', () => {
         };
     });
 
-    it('should return cached credentials if available', async () => {
+    test('should return cached credentials if available', async () => {
         mockCacheProvider.get.mockResolvedValue(JSON.stringify(credentials));
 
         const result = await cachingAuthProvider.auth(context);
@@ -51,7 +51,7 @@ describe('CachingAuthProvider', () => {
         expect(mockDelegate.auth).not.toHaveBeenCalled();
     });
 
-    it('should fetch credentials from delegate and cache them if not available in cache', async () => {
+    test('should fetch credentials from delegate and cache them if not available in cache', async () => {
         mockCacheProvider.get.mockResolvedValue(null);
         mockDelegate.auth.mockResolvedValue(credentials);
 

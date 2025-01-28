@@ -1,7 +1,5 @@
 import { RedisClientType } from 'redis';
-import { getRedisClient } from './redis.cache.config';
 import { CacheProvider } from './cache.provider';
-import assert from 'assert';
 
 /**
  * Implementation of the CacheProvider interface using Redis as the caching mechanism.
@@ -14,9 +12,7 @@ class RedisCache implements CacheProvider {
      * Sets up the Redis client connection.
      * @throws Will throw an error if the Redis client fails to initialize.
      */
-    constructor() {
-        const client = getRedisClient();
-        assert(client, 'Failed to initialize Redis client');
+    constructor(client: RedisClientType) {
         this.redisClient = client;
     }
 
