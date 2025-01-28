@@ -37,10 +37,8 @@ class AuthImpl implements AuthProvider {
 
         const cachedValue = await this.cacheProvider.get(cacheKey);
         if (cachedValue) {
-            console.log('Cache hit');
             return JSON.parse(cachedValue);
         }
-        console.log('Cache miss');
 
         const credentials = await this.requestCredentials(contexto);
         await this.cacheProvider.set(cacheKey, JSON.stringify(credentials));
