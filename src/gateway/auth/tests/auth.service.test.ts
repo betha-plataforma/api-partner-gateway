@@ -1,11 +1,11 @@
-import { AuthService } from '../auth.service';
-import { AuthServiceRequestException } from '../auth.errors';
+import { AuthImpl } from '../auth.impl';
+import { AuthImplRequestException } from '../auth.errors';
 import { BthContext } from '../../gateway.interfaces';
 
 global.fetch = jest.fn();
 
-describe('AuthService', () => {
-    let authService: AuthService;
+describe('AuthImpl', () => {
+    let authImpl: AuthImpl;
     const mockContext: BthContext = {
         database: '1',
         entity: '1',
@@ -14,7 +14,7 @@ describe('AuthService', () => {
 
     beforeEach(() => {
         process.env.AUTH_URI = 'http://localhost:3000/mock/partner/auth';
-        authService = new AuthService();
+        authImpl = new AuthImpl();
         jest.clearAllMocks();
     });
 
@@ -33,7 +33,7 @@ describe('AuthService', () => {
         };
         (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-        const credentials = await authService.getCredentials(mockContext);
+        const credentials = await authImpl.auth(mockContext);
 
         expect(global.fetch).toHaveBeenCalledWith(
             'http://localhost:3000/mock/partner/auth?database=1&entity=1&system=1',
@@ -51,7 +51,7 @@ describe('AuthService', () => {
         });
     });
 
-    test('should throw AuthServiceRequestException for 4xx errors', async () => {
+    test('should throw AuthImplRequestException for 4xx errors', async () => {
         const mockResponse = {
             ok: false,
             status: 400,
@@ -59,12 +59,10 @@ describe('AuthService', () => {
         };
         (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-        await expect(authService.getCredentials(mockContext)).rejects.toThrow(
-            AuthServiceRequestException
-        );
+        await expect(authImpl.auth(mockContext)).rejects.toThrow(AuthImplRequestException);
     });
 
-    test('should throw AuthServiceRequestException for 5xx errors', async () => {
+    test('should throw AuthImplRequestException for 5xx errors', async () => {
         const mockResponse = {
             ok: false,
             status: 500,
@@ -72,12 +70,10 @@ describe('AuthService', () => {
         };
         (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-        await expect(authService.getCredentials(mockContext)).rejects.toThrow(
-            AuthServiceRequestException
-        );
+        await expect(authImpl.auth(mockContext)).rejects.toThrow(AuthImplRequestException);
     });
 
-    test('should throw AuthServiceRequestException for other status codes', async () => {
+    test('should throw AuthImplRequestException for other status codes', async () => {
         const mockResponse = {
             ok: false,
             status: 300,
@@ -85,16 +81,12 @@ describe('AuthService', () => {
         };
         (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-        await expect(authService.getCredentials(mockContext)).rejects.toThrow(
-            AuthServiceRequestException
-        );
+        await expect(authImpl.auth(mockContext)).rejects.toThrow(AuthImplRequestException);
     });
 
     test('should throw Error when AUTH_URI is not defined', () => {
         delete process.env.AUTH_URI;
 
-        expect(() => new AuthService()).toThrow(
-            'A variável de ambiente AUTH_URI não está definida'
-        );
+        expect(() => new AuthImpl()).toThrow('A variável de ambiente AUTH_URI não está definida');
     });
 });

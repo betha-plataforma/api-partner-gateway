@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { GatewayController } from './gateway.controller';
 import { GatewayService } from './gateway.service';
-import { AuthService } from './auth/auth.service';
+import { AuthImpl } from './auth/auth.impl';
 
 const router = Router();
 
@@ -9,6 +9,6 @@ const router = Router();
  * Routes for the gateway
  */
 router.use('/auth', (req: Request, res: Response, next: any) =>
-    new GatewayController(new GatewayService(), new AuthService()).auth(req, res, next)
+    new GatewayController(new GatewayService(), new AuthImpl()).auth(req, res, next)
 );
 export { router };

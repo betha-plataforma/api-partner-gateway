@@ -3,12 +3,12 @@ import { GatewayController } from '../gateway.controller';
 import { jest } from '@jest/globals';
 import { GatewayService } from '../gateway.service';
 import { Request, Response } from 'express';
-import { AuthService } from '../auth/auth.service';
+import { AuthImpl } from '../auth/auth.impl';
 
 describe('Gateway routes', () => {
     let secretKey: string;
     let mockGatewayService: jest.Mocked<GatewayService>;
-    let mockAuthService: jest.Mocked<AuthService>;
+    let mockAuthImpl: jest.Mocked<AuthImpl>;
     let req: Partial<Request>;
     let res: Partial<Response>;
     let controller: GatewayController;
@@ -22,9 +22,9 @@ describe('Gateway routes', () => {
             getContext: jest.fn()
         } as unknown as jest.Mocked<GatewayService>;
 
-        mockAuthService = {
-            getCredentials: jest.fn()
-        } as unknown as jest.Mocked<AuthService>;
+        mockAuthImpl = {
+            auth: jest.fn()
+        } as unknown as jest.Mocked<AuthImpl>;
 
         req = {
             headers: {}
@@ -36,7 +36,7 @@ describe('Gateway routes', () => {
             json: jest.fn()
         } as unknown as Partial<Response>;
 
-        controller = new GatewayController(mockGatewayService, mockAuthService);
+        controller = new GatewayController(mockGatewayService, mockAuthImpl);
     });
 
     afterEach(() => {
@@ -57,7 +57,7 @@ describe('Gateway routes', () => {
             };
         });
 
-        jest.spyOn(AuthService.prototype, 'getCredentials').mockImplementation(async () => {
+        jest.spyOn(AuthImpl.prototype, 'auth').mockImplementation(async () => {
             return {
                 uriRedirect: 'mockUriRedirect',
                 method: 'GET',

@@ -1,19 +1,21 @@
 import { CacheProviderFactory } from '../../cache/cache.provider.factory';
 import { AuthCredentials } from './auth.interfaces';
 import { BthContext } from '../gateway.interfaces';
-import { AuthServiceRequestException, AuthServiceException } from './auth.errors';
+import { AuthImplRequestException, AuthImplException } from './auth.errors';
+import { AuthProvider } from './auth.provider';
+import { CacheProvider } from '../../cache/cache.provider';
 import assert from 'assert';
 
 /**
- * A classe AuthService fornece métodos para interagir com um serviço de autenticação.
+ * A classe AuthImpl fornece métodos para interagir com um serviço de autenticação.
  * Ela recupera credenciais de autenticação com base no contexto fornecido.
  */
-class AuthService {
+class AuthImpl implements AuthProvider {
     private authUri: string;
     private cacheProvider: CacheProvider;
 
     /**
-     * Construtor da classe AuthService.
+     * Construtor da classe AuthImpl.
      */
     constructor() {
         const authUri = process.env.AUTH_URI;
@@ -23,14 +25,14 @@ class AuthService {
     }
 
     /**
-     * Recupera credenciais de autenticação com base no contexto fornecido.
+     * Recupera as credenciais de autenticação com base no contexto fornecido.
      *
      * @param contexto - O contexto contendo as informações necessárias para obter as credenciais.
      * @returns Uma promessa que resolve as credenciais de autenticação.
-     * @throws AuthServiceException - Se ocorrer um erro inesperado durante a operação de busca.
-     * @throws AuthServiceRequestException - Se a resposta do serviço de autenticação não for bem-sucedida.
+     * @throws AuthImplException - Se ocorrer um erro inesperado durante a operação de busca.
+     * @throws AuthImplRequestException - Se a resposta do serviço de autenticação não for bem-sucedida.
      */
-    public async getCredentials(contexto: BthContext): Promise<AuthCredentials> {
+    public async auth(contexto: BthContext): Promise<AuthCredentials> {
         const cacheKey = this.generateCacheKey(contexto);
 
         const cachedValue = await this.cacheProvider.get(cacheKey);
@@ -50,10 +52,10 @@ class AuthService {
         try {
             resposta = await fetch(urlComParametros, this.getRequestOptions());
         } catch (error) {
-            throw new AuthServiceException('Ocorreu um erro inesperado', error);
+            throw new AuthImplException('Ocorreu um erro inesperado', error);
         }
 
-        assert(resposta.ok, new AuthServiceRequestException(resposta.statusText));
+        assert(resposta.ok, new AuthImplRequestException(resposta.statusText));
 
         return await this.parseResponseToCredentials(resposta);
     }
@@ -63,15 +65,15 @@ class AuthService {
      *
      * @param resposta - O objeto de resposta a ser analisado.
      * @returns Uma promessa que resolve para um objeto AuthCredentials.
-     * @throws AuthServiceException se campos obrigatórios estiverem ausentes na resposta.
+     * @throws AuthImplException se campos obrigatórios estiverem ausentes na resposta.
      */
     private async parseResponseToCredentials(resposta: Response): Promise<AuthCredentials> {
         const credenciais: AuthCredentials = await resposta.json();
         assert(
             credenciais.uriRedirect,
-            new AuthServiceException('Campo obrigatório ausente: uriRedirect')
+            new AuthImplException('Campo obrigatório ausente: uriRedirect')
         );
-        assert(credenciais.method, new AuthServiceException('Campo obrigatório ausente: method'));
+        assert(credenciais.method, new AuthImplException('Campo obrigatório ausente: method'));
 
         return {
             uriRedirect: credenciais.uriRedirect,
@@ -117,4 +119,4 @@ class AuthService {
     }
 }
 
-export { AuthService };
+export { AuthImpl as AuthImpl };

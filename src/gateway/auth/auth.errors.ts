@@ -1,4 +1,4 @@
-export class AuthServiceRequestException extends Error {
+export class AuthImplRequestException extends Error {
     public errors?: any;
 
     constructor(message: string, errors?: any) {
@@ -7,7 +7,7 @@ export class AuthServiceRequestException extends Error {
     }
 }
 
-export class AuthServiceException extends Error {
+export class AuthImplException extends Error {
     public errors?: any;
 
     constructor(message: string, errors?: any) {

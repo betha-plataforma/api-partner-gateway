@@ -1,4 +1,5 @@
 import NodeCache from 'node-cache';
+import { CacheProvider } from './cache.provider';
 
 /**
  * Implementation of the CacheProvider interface using an in-memory cache.
