@@ -17,7 +17,7 @@ class GatewayService {
      * Constructor for the GatewayService class.
      */
     constructor() {
-        const {jwksUri} = config.jwt;
+        const { jwksUri } = config.jwt;
         const jwksCacheAge = config.jwt.cache.ageMs;
         const jwksCacheMaxEntries = config.jwt.cache.maxEntries;
         assert(jwksUri, 'ENV JWKS_URI is not defined');
