@@ -2,7 +2,7 @@ import assert from 'assert';
 import { AuthProvider } from './auth.provider.js';
 import { AuthCredentials } from './auth.interfaces.js';
 import { BthContext } from '../gateway.interfaces.js';
-import { AuthImplRequestException, AuthImplException } from './auth.errors.js';
+import { AuthImplException, AuthImplRequestException } from './auth.errors.js';
 import config from '../../config/index.js';
 
 /**

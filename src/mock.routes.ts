@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express';
+import { Request, Response, Router } from 'express';
 import AppConstants from './app-constants.js';
 
 const router = Router();

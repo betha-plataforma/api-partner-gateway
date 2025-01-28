@@ -1,7 +1,7 @@
 import { AuthImpl } from '../auth.impl.js';
 import { BthContext } from '../../gateway.interfaces.js';
 import { AuthCredentials } from '../auth.interfaces.js';
-import { AuthImplRequestException, AuthImplException } from '../auth.errors.js';
+import { AuthImplException, AuthImplRequestException } from '../auth.errors.js';
 import config from '../../../config/index.js';
 
 describe('AuthImpl', () => {

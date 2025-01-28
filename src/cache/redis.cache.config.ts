@@ -1,4 +1,4 @@
-import { createClient, RedisClientType } from 'redis';
+import { RedisClientType, createClient } from 'redis';
 import assert from 'assert';
 import config from './../config/index.js';
 

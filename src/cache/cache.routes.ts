@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express';
+import { Request, Response, Router } from 'express';
 import { CacheController } from './cache.controller.js';
 
 const router = Router();

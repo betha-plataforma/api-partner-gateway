@@ -1,3 +1,4 @@
+// eslint.config.js
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import eslintConfigPrettier from 'eslint-config-prettier';
@@ -17,6 +18,14 @@ export default tseslint.config(
             '@typescript-eslint': tseslint.plugin,
         },
         rules: {
+            // Import sorting - auto-fixable configuration
+            'sort-imports': ['error', {
+                ignoreCase: false,
+                ignoreDeclarationSort: true,
+                ignoreMemberSort: false,
+                memberSyntaxSortOrder: ['single', 'multiple', 'all', 'none'],
+            }],
+            // Existing rules
             '@typescript-eslint/explicit-function-return-type': 'warn',
             '@typescript-eslint/no-explicit-any': 'warn',
             '@typescript-eslint/no-unused-vars': ['error', { 'argsIgnorePattern': '^_' }],
@@ -43,6 +52,14 @@ export default tseslint.config(
             '@typescript-eslint': tseslint.plugin,
         },
         rules: {
+            // Import sorting - auto-fixable configuration
+            'sort-imports': ['error', {
+                ignoreCase: false,
+                ignoreDeclarationSort: true,
+                ignoreMemberSort: false,
+                memberSyntaxSortOrder: ['single', 'multiple', 'all', 'none'],
+            }],
+            // Existing rules
             '@typescript-eslint/no-unused-vars': ['error', { 'argsIgnorePattern': '^_' }],
             'curly': ['error', 'all'],
             'eqeqeq': ['error', 'always'],
