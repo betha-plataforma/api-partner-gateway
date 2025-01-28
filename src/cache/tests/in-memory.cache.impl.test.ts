@@ -5,7 +5,6 @@ describe('InMemoryCache', () => {
     let cache: InMemoryCache;
 
     beforeEach(() => {
-        process.env.IN_MEMORY_CACHE_TTL = '3600';
         InMemoryCacheConfig.setup();
         cache = new InMemoryCache();
     });

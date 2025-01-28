@@ -3,11 +3,11 @@ import { router as gatewayRoutes } from './gateway/gateway.routes.js';
 import { router as mockRoutes } from './mock.routes.js';
 import { router as cacheRoutes } from './cache/cache.routes.js';
 import { InMemoryCacheConfig } from './cache/in-memory.cache.config.js';
+import config from './config/index.js';
 
 const app: Application = express();
 
 // Express configuration
-app.set('port', process.env.PORT);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -29,6 +29,8 @@ app.use('/alive', (_req: Request, res: Response): void => {
 
 // Initialize the in-memory cache instance
 // if not using Redis
-InMemoryCacheConfig.setup();
+if (!config.cache.redis.enabled) {
+    InMemoryCacheConfig.setup();
+}
 
 export default app;

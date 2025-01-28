@@ -1,9 +1,10 @@
+import assert from 'assert';
 import jwksRsa from 'jwks-rsa';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { InvalidTokenException } from './gateway.errors.js';
 import { BthContext } from './gateway.interfaces.js';
 import { BthJwtPayload } from './gateway.interfaces.js';
-import assert from 'assert';
+import config from '../config/index.js';
 
 /**
  * The GatewayService class provides methods for authenticating requests to the
@@ -16,9 +17,9 @@ class GatewayService {
      * Constructor for the GatewayService class.
      */
     constructor() {
-        const jwksUri = process.env.JWKS_URI;
-        const jwksCacheAge = process.env.JWKS_CACHE_AGE;
-        const jwksCacheMaxEntries = process.env.JWKS_CACHE_MAX_ENTRIES;
+        const jwksUri = config.jwt.jwksUri;
+        const jwksCacheAge = config.jwt.cache.ageMs;
+        const jwksCacheMaxEntries = config.jwt.cache.maxEntries;
         assert(jwksUri, 'ENV JWKS_URI is not defined');
         assert(jwksCacheAge, 'ENV JWKS_CACHE_AGE is not defined');
         assert(jwksCacheMaxEntries, 'ENV JWKS_CACHE_MAX_ENTRIES is not defined');
@@ -26,8 +27,8 @@ class GatewayService {
         this.jwksClient = jwksRsa({
             jwksUri,
             cache: true,
-            cacheMaxEntries: parseInt(jwksCacheMaxEntries),
-            cacheMaxAge: parseInt(jwksCacheAge)
+            cacheMaxEntries: jwksCacheMaxEntries,
+            cacheMaxAge: jwksCacheAge
         });
     }
 

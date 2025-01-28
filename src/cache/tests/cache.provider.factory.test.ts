@@ -1,9 +1,9 @@
-// cache.provider.factory.spec.ts (example filename)
 import { CacheProviderFactory } from '../cache.provider.factory.js';
 import { InMemoryCache } from '../in-memory.cache.impl.js';
 import { RedisCache } from '../redis.cache.impl.js';
 import { getRedisClient } from '../redis.cache.config.js';
 import { InMemoryCacheConfig } from '../in-memory.cache.config.js';
+import config from '../../config/index.js';
 
 jest.mock('../redis.cache.config', () => {
     const originalModule = jest.requireActual('../redis.cache.config');
@@ -17,7 +17,6 @@ describe('CacheProviderFactory', () => {
     let mockRedisClient: any;
 
     beforeEach(() => {
-        process.env.USE_REDIS = 'false';
         mockRedisClient = {
             get: jest.fn(),
             set: jest.fn(),
@@ -34,19 +33,22 @@ describe('CacheProviderFactory', () => {
 
     afterEach(() => {
         jest.clearAllMocks();
-        jest.resetModules();
-        delete process.env.USE_REDIS;
     });
 
-    test('should return an InMemoryCache if USE_REDIS is not set to true', () => {
-        process.env.USE_REDIS = 'false';
+    test('should return an InMemoryCache if Redis is not enabled', () => {
+        Object.defineProperty(config.cache.redis, 'enabled', {
+            get: () => false
+        });
+
         const cacheProvider = CacheProviderFactory.createCacheProvider();
         expect(cacheProvider).toBeInstanceOf(InMemoryCache);
-        // expect(getRedisClient).not.toHaveBeenCalled();
     });
 
-    test('should return a RedisCache if USE_REDIS is set to true', () => {
-        process.env.USE_REDIS = 'true';
+    test('should return a RedisCache if Redis is enabled', () => {
+        Object.defineProperty(config.cache.redis, 'enabled', {
+            get: () => true
+        });
+
         const cacheProvider = CacheProviderFactory.createCacheProvider();
         expect(cacheProvider).toBeInstanceOf(RedisCache);
         expect(getRedisClient).toHaveBeenCalledTimes(1);

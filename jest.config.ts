@@ -1,7 +1,4 @@
 import type { Config } from 'jest';
-import dotenv from 'dotenv';
-
-dotenv.config({ path: '.env.test' });
 
 process.env.NODE_ENV = 'test';
 
@@ -23,7 +20,6 @@ export default async (): Promise<Config> => {
         preset: 'ts-jest/presets/default-esm',
         moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
         testEnvironment: 'node',
-        setupFiles: ['dotenv/config'],
         testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[tj]s?(x)'],
         collectCoverageFrom: ['src/**/*.{ts,tsx}', '!src/**/*.d.ts', '!src/**/*.test.{ts,tsx}']
     };

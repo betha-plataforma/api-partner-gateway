@@ -1,5 +1,6 @@
 import assert from 'assert';
 import NodeCache from 'node-cache';
+import config from '../config/index.js';
 
 class InMemoryCacheConfig {
     private static instance: NodeCache | null = null;
@@ -10,10 +11,10 @@ class InMemoryCacheConfig {
      * @returns {NodeCache} A new instance of NodeCache with the following settings:
      */
     private static createInstance(): NodeCache {
-        const cacheTTL = process.env.IN_MEMORY_CACHE_TTL;
+        const cacheTTL = config.cache.inMemory.ttlSeconds;
         assert(cacheTTL, 'IN_MEMORY_CACHE_TTL environment variable is required.');
         return new NodeCache({
-            stdTTL: parseInt(cacheTTL, 10)
+            stdTTL: cacheTTL
         });
     }
 
@@ -22,8 +23,8 @@ class InMemoryCacheConfig {
      * This method ensures that the application uses NodeCache only when Redis is not configured as the cache provider.
      */
     public static setup(): void {
-        const useNodeCache = process.env.USE_REDIS !== 'true';
-        if (useNodeCache && !InMemoryCacheConfig.instance) {
+        const useNodeCache = config.cache.redis.enabled;
+        if (!useNodeCache && !InMemoryCacheConfig.instance) {
             InMemoryCacheConfig.instance = InMemoryCacheConfig.createInstance();
         }
     }
@@ -35,10 +36,13 @@ class InMemoryCacheConfig {
      * @throws {Error} If the NodeCache instance has not been created.
      */
     public static getInstance(): NodeCache {
-        assert(
-            InMemoryCacheConfig.instance,
-            'In memory cache instance has not been initialized. Initializing...'
-        );
+        if (!InMemoryCacheConfig.instance) {
+            console.error(
+                InMemoryCacheConfig.instance,
+                'In memory cache instance has not been initialized. Initializing...'
+            );
+            InMemoryCacheConfig.instance = InMemoryCacheConfig.createInstance();
+        }
         return InMemoryCacheConfig.instance;
     }
 }

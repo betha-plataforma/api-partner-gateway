@@ -3,6 +3,7 @@ import { AuthProvider } from './auth.provider.js';
 import { AuthCredentials } from './auth.interfaces.js';
 import { BthContext } from '../gateway.interfaces.js';
 import { AuthImplRequestException, AuthImplException } from './auth.errors.js';
+import config from '../../config/index.js';
 
 /**
  * A classe AuthImpl fornece métodos para interagir com um serviço de autenticação.
@@ -15,7 +16,7 @@ class AuthImpl implements AuthProvider {
      * Construtor da classe AuthImpl.
      */
     constructor() {
-        const authUri = process.env.AUTH_URI;
+        const authUri = config.auth.uri;
         assert(authUri, 'A variável de ambiente AUTH_URI não está definida');
         this.authUri = authUri;
     }

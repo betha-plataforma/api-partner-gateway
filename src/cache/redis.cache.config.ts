@@ -1,12 +1,13 @@
 import { createClient, RedisClientType } from 'redis';
 import assert from 'assert';
+import config from './../config/index.js';
 
 let redisClient: RedisClientType | null = null;
 
 export const getRedisClient = (): RedisClientType => {
     if (!redisClient) {
         redisClient = createClient({
-            url: process.env.REDIS_URL
+            url: config.cache.redis.url
         });
 
         redisClient.on('error', (err) => {

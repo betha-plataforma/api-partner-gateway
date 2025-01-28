@@ -2,6 +2,7 @@ import { CacheProvider } from './cache.provider.js';
 import { InMemoryCache } from './in-memory.cache.impl.js';
 import { getRedisClient } from './redis.cache.config.js';
 import { RedisCache } from './redis.cache.impl.js';
+import config from '../config/index.js';
 
 /**
  * Factory class for creating cache providers.
@@ -15,7 +16,7 @@ class CacheProviderFactory {
      * @returns {CacheProvider} An instance of a cache provider.
      */
     static createCacheProvider(): CacheProvider {
-        const useRedis = process.env.USE_REDIS === 'true';
+        const useRedis = config.cache.redis.enabled;
         if (useRedis) {
             return new RedisCache(getRedisClient());
         }

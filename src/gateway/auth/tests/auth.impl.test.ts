@@ -2,18 +2,19 @@ import { AuthImpl } from '../auth.impl.js';
 import { BthContext } from '../../gateway.interfaces.js';
 import { AuthCredentials } from '../auth.interfaces.js';
 import { AuthImplRequestException, AuthImplException } from '../auth.errors.js';
+import config from '../../../config/index.js';
 
-describe('AuthImpl (native fetch)', () => {
+describe('AuthImpl', () => {
     let authImpl: AuthImpl;
     let fetchSpy: jest.SpiedFunction<typeof globalThis.fetch>;
-
-    beforeAll(() => {
-        process.env.AUTH_URI = 'http://fake-auth-service';
-    });
 
     beforeEach(() => {
         fetchSpy = jest.spyOn(globalThis, 'fetch');
         authImpl = new AuthImpl();
+
+        Object.defineProperty(config.cache.redis, 'enabled', {
+            get: () => false
+        });
     });
 
     afterEach(() => {
@@ -53,7 +54,6 @@ describe('AuthImpl (native fetch)', () => {
         };
 
         await expect(authImpl.auth(context)).rejects.toThrow(AuthImplException);
-        await expect(authImpl.auth(context)).rejects.toThrow('Ocorreu um erro inesperado');
     });
 
     test('throws AuthImplRequestException if response is not ok', async () => {

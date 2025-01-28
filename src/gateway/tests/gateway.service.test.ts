@@ -1,6 +1,5 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import jwksRsa from 'jwks-rsa';
-import { config } from 'dotenv';
 import { GatewayService } from '../gateway.service.js';
 import { InvalidTokenException } from '../gateway.errors.js';
 
@@ -13,7 +12,6 @@ describe('GatewayService', () => {
     };
 
     beforeAll(() => {
-        config({ path: './.env.test' });
         (jwksRsa as unknown as jest.Mock).mockImplementation(() => mockJwksClient);
     });
 

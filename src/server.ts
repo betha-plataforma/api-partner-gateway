@@ -1,13 +1,14 @@
+import config from './config/index.js';
 import app from './app.js';
 
 /**
  * Start Express server.
  */
-const server = app.listen(app.get('port'), () => {
+const server = app.listen(config.port, () => {
     console.log(
         '  App is running at http://localhost:%d in %s mode',
-        app.get('port'),
-        app.get('env')
+        config.port,
+        process.env.NODE_ENV
     );
     console.log('  Press CTRL-C to stop\n');
 });
