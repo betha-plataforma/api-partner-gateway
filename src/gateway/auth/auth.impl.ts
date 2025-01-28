@@ -1,9 +1,7 @@
-import { CacheProviderFactory } from '../../cache/cache.provider.factory';
+import { AuthProvider } from './auth.provider';
 import { AuthCredentials } from './auth.interfaces';
 import { BthContext } from '../gateway.interfaces';
 import { AuthImplRequestException, AuthImplException } from './auth.errors';
-import { AuthProvider } from './auth.provider';
-import { CacheProvider } from '../../cache/cache.provider';
 import assert from 'assert';
 
 /**
@@ -12,7 +10,6 @@ import assert from 'assert';
  */
 class AuthImpl implements AuthProvider {
     private authUri: string;
-    private cacheProvider: CacheProvider;
 
     /**
      * Construtor da classe AuthImpl.
@@ -21,7 +18,6 @@ class AuthImpl implements AuthProvider {
         const authUri = process.env.AUTH_URI;
         assert(authUri, 'A variável de ambiente AUTH_URI não está definida');
         this.authUri = authUri;
-        this.cacheProvider = CacheProviderFactory.createCacheProvider();
     }
 
     /**
@@ -32,32 +28,19 @@ class AuthImpl implements AuthProvider {
      * @throws AuthImplException - Se ocorrer um erro inesperado durante a operação de busca.
      * @throws AuthImplRequestException - Se a resposta do serviço de autenticação não for bem-sucedida.
      */
-    public async auth(contexto: BthContext): Promise<AuthCredentials> {
-        const cacheKey = this.generateCacheKey(contexto);
+    public async auth(context: BthContext): Promise<AuthCredentials> {
+        const urlWithParams = this.buildUrlWithParams(context);
+        let response: Response;
 
-        const cachedValue = await this.cacheProvider.get(cacheKey);
-        if (cachedValue) {
-            return JSON.parse(cachedValue);
-        }
-
-        const credentials = await this.requestCredentials(contexto);
-        await this.cacheProvider.set(cacheKey, JSON.stringify(credentials));
-
-        return credentials;
-    }
-
-    private async requestCredentials(contexto: BthContext): Promise<AuthCredentials> {
-        const urlComParametros = this.buildUrlWithParams(contexto);
-        let resposta: Response;
         try {
-            resposta = await fetch(urlComParametros, this.getRequestOptions());
+            response = await fetch(urlWithParams, this.getRequestOptions());
         } catch (error) {
             throw new AuthImplException('Ocorreu um erro inesperado', error);
         }
 
-        assert(resposta.ok, new AuthImplRequestException(resposta.statusText));
+        assert(response.ok, new AuthImplRequestException(response.statusText));
 
-        return await this.parseResponseToCredentials(resposta);
+        return await this.parseResponseToCredentials(response);
     }
 
     /**
@@ -67,18 +50,18 @@ class AuthImpl implements AuthProvider {
      * @returns Uma promessa que resolve para um objeto AuthCredentials.
      * @throws AuthImplException se campos obrigatórios estiverem ausentes na resposta.
      */
-    private async parseResponseToCredentials(resposta: Response): Promise<AuthCredentials> {
-        const credenciais: AuthCredentials = await resposta.json();
+    private async parseResponseToCredentials(response: Response): Promise<AuthCredentials> {
+        const credentials: AuthCredentials = await response.json();
         assert(
-            credenciais.uriRedirect,
+            credentials.uriRedirect,
             new AuthImplException('Campo obrigatório ausente: uriRedirect')
         );
-        assert(credenciais.method, new AuthImplException('Campo obrigatório ausente: method'));
+        assert(credentials.method, new AuthImplException('Campo obrigatório ausente: method'));
 
         return {
-            uriRedirect: credenciais.uriRedirect,
-            method: credenciais.method,
-            headers: credenciais.headers
+            uriRedirect: credentials.uriRedirect,
+            method: credentials.method,
+            headers: credentials.headers
         };
     }
 
@@ -90,9 +73,7 @@ class AuthImpl implements AuthProvider {
     private getRequestOptions(): RequestInit {
         return {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
+            headers: { 'Content-Type': 'application/json' }
         };
     }
 
@@ -102,19 +83,9 @@ class AuthImpl implements AuthProvider {
      * @param contexto - O contexto da requisição.
      * @returns A URL construída com os parâmetros de consulta anexados.
      */
-    private buildUrlWithParams(contexto: BthContext): string {
-        const parametrosQuery = new URLSearchParams(Object.entries(contexto)).toString();
-        return `${this.authUri}?${parametrosQuery}`;
-    }
-
-    /**
-     * Gera uma chave de cache única com base no contexto fornecido.
-     *
-     * @param contexto - O contexto para gerar a chave do cache.
-     * @returns Uma string única representando a chave do cache.
-     */
-    private generateCacheKey(contexto: BthContext): string {
-        return `${contexto.database}:${contexto.entity}:${contexto.system}`;
+    private buildUrlWithParams(context: BthContext): string {
+        const queryParams = new URLSearchParams(Object.entries(context)).toString();
+        return `${this.authUri}?${queryParams}`;
     }
 }
 

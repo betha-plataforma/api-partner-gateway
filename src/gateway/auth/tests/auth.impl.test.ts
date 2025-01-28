@@ -1,13 +1,10 @@
 import { AuthImpl } from '../auth.impl';
-import { CacheProviderFactory } from '../../../cache/cache.provider.factory';
-import { CacheProvider } from '../../../cache/cache.provider';
 import { BthContext } from '../../gateway.interfaces';
 import { AuthCredentials } from '../auth.interfaces';
 import { AuthImplRequestException, AuthImplException } from '../auth.errors';
 
 describe('AuthImpl (native fetch)', () => {
     let authImpl: AuthImpl;
-    let mockCacheProvider: jest.Mocked<CacheProvider>;
     let fetchSpy: jest.SpiedFunction<typeof globalThis.fetch>;
 
     beforeAll(() => {
@@ -15,14 +12,6 @@ describe('AuthImpl (native fetch)', () => {
     });
 
     beforeEach(() => {
-        mockCacheProvider = {
-            get: jest.fn(),
-            set: jest.fn(),
-            clear: jest.fn(),
-            clearAll: jest.fn()
-        };
-
-        jest.spyOn(CacheProviderFactory, 'createCacheProvider').mockReturnValue(mockCacheProvider);
         fetchSpy = jest.spyOn(globalThis, 'fetch');
         authImpl = new AuthImpl();
     });
@@ -31,33 +20,12 @@ describe('AuthImpl (native fetch)', () => {
         jest.restoreAllMocks();
     });
 
-    it('returns cached credentials if they exist', async () => {
-        const mockCredentials: AuthCredentials = {
-            uriRedirect: 'http://cached',
-            method: 'GET',
-            headers: { Authorization: 'Bearer cached' }
-        };
-        mockCacheProvider.get.mockResolvedValueOnce(JSON.stringify(mockCredentials));
-
-        const context: BthContext = {
-            database: 'db',
-            entity: 'ent',
-            system: 'sys'
-        };
-
-        const result = await authImpl.auth(context);
-        expect(result).toEqual(mockCredentials);
-        expect(mockCacheProvider.get).toHaveBeenCalledWith('db:ent:sys');
-        expect(fetchSpy).not.toHaveBeenCalled();
-    });
-
     it('fetches new credentials and caches them if not in cache', async () => {
         const mockCredentials: AuthCredentials = {
             uriRedirect: 'http://fetched',
             method: 'POST',
             headers: { 'X-Custom': 'header' }
         };
-        mockCacheProvider.get.mockResolvedValueOnce(null);
         fetchSpy.mockResolvedValueOnce({
             ok: true,
             statusText: 'OK',
@@ -72,15 +40,10 @@ describe('AuthImpl (native fetch)', () => {
 
         const result = await authImpl.auth(context);
         expect(fetchSpy).toHaveBeenCalledTimes(1);
-        expect(mockCacheProvider.set).toHaveBeenCalledWith(
-            'db:ent:sys',
-            JSON.stringify(mockCredentials)
-        );
         expect(result).toEqual(mockCredentials);
     });
 
     it('throws AuthImplException if fetch rejects', async () => {
-        mockCacheProvider.get.mockResolvedValueOnce(null);
         fetchSpy.mockRejectedValueOnce(new Error('Network error'));
 
         const context: BthContext = {
@@ -94,7 +57,6 @@ describe('AuthImpl (native fetch)', () => {
     });
 
     it('throws AuthImplRequestException if response is not ok', async () => {
-        mockCacheProvider.get.mockResolvedValueOnce(null);
         fetchSpy.mockResolvedValueOnce({
             ok: false,
             statusText: 'Not Found'
@@ -110,7 +72,6 @@ describe('AuthImpl (native fetch)', () => {
     });
 
     it('throws AuthImplException if required fields are missing', async () => {
-        mockCacheProvider.get.mockResolvedValueOnce(null);
         const invalidCredentials = {
             method: 'GET',
             headers: { 'X-Test': 'test-header' }
