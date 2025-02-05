@@ -27,8 +27,7 @@ app.use('/alive', (_req: Request, res: Response): void => {
     res.status(200).send('yes');
 });
 
-// Initialize the in-memory cache instance
-// if not using Redis
+// Initialize the in-memory cache instance if not using Redis
 if (!config.cache.redis.enabled) {
     InMemoryCacheConfig.setup();
 }
