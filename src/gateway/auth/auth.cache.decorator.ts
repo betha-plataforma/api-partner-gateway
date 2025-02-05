@@ -1,4 +1,3 @@
-import { AuthImpl } from './auth.impl.js';
 import { AuthProvider } from './auth.provider.js';
 import { BthContext } from '../gateway.interfaces.js';
 import { AuthCredentials } from './auth.interfaces.js';
@@ -10,7 +9,7 @@ import { CacheProviderFactory } from '../../cache/cache.provider.factory.js';
  * ao processo de autenticação. Ele utiliza um CacheProvider para armazenar e recuperar credenciais de autenticação,
  * reduzindo o número de chamadas para o AuthProvider subjacente.
  */
-export class CachingAuthProvider extends AuthImpl implements AuthProvider {
+export class CachingAuthProvider implements AuthProvider {
     /**
      * O cache provider utilizado para armazenar e recuperar as credenciais de autenticação em cache.
      */
@@ -21,7 +20,6 @@ export class CachingAuthProvider extends AuthImpl implements AuthProvider {
      * @param delegate - O AuthProvider subjacente que realiza a autenticação real.
      */
     constructor(private delegate: AuthProvider) {
-        super();
         this.cacheProvider = CacheProviderFactory.createCacheProvider();
     }
 

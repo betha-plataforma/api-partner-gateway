@@ -4,8 +4,8 @@ import { check, validationResult } from 'express-validator';
 import { GatewayService } from './gateway.service.js';
 import AppConstants from '../app-constants.js';
 import { AuthCredentials } from './auth/auth.interfaces.js';
-import { AuthImpl } from './auth/auth.impl.js';
 import { GatewayValidationException, InvalidTokenException } from './gateway.errors.js';
+import { AuthProvider } from './auth/auth.provider.js';
 
 /**
  * Controller class for handling gateway-related functionality.
@@ -14,14 +14,14 @@ import { GatewayValidationException, InvalidTokenException } from './gateway.err
  */
 class GatewayController {
     private gatewayService: GatewayService;
-    private authImpl: AuthImpl;
+    private authImpl: AuthProvider;
 
     /**
      * Constructor for the GatewayController class.
      *
      * @param gatewayService The gateway service.
      */
-    constructor(gatewayService: GatewayService, authImpl: AuthImpl) {
+    constructor(gatewayService: GatewayService, authImpl: AuthProvider) {
         this.gatewayService = gatewayService;
         this.authImpl = authImpl;
     }
