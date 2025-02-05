@@ -27,18 +27,18 @@ export class CachingAuthProvider implements AuthProvider {
      * Autentica o contexto fornecido, verificando primeiro o cache para encontrar credenciais existentes.
      * Se não encontrar credenciais em cache, delega a autenticação para o AuthProvider subjacente
      * e armazena o resultado em cache.
-     * @param contexto - O contexto para o qual se deseja autenticar.
+     * @param context - O contexto para o qual se deseja autenticar.
      * @returns Uma promessa que resolve para as credenciais de autenticação.
      */
-    public async auth(contexto: BthContext): Promise<AuthCredentials> {
-        const cacheKey = this.generateCacheKey(contexto);
+    public async auth(context: BthContext): Promise<AuthCredentials> {
+        const cacheKey = this.generateCacheKey(context);
 
         const cachedValue = await this.cacheProvider.get(cacheKey);
         if (cachedValue) {
             return JSON.parse(cachedValue);
         }
 
-        const credentials = await this.delegate.auth(contexto);
+        const credentials = await this.delegate.auth(context);
         await this.cacheProvider.set(cacheKey, JSON.stringify(credentials));
 
         return credentials;
@@ -46,10 +46,10 @@ export class CachingAuthProvider implements AuthProvider {
 
     /**
      * Gera uma chave de cache com base no contexto fornecido.
-     * @param contexto - O contexto para o qual se deseja gerar a chave de cache.
+     * @param context - O contexto para o qual se deseja gerar a chave de cache.
      * @returns A chave de cache gerada.
      */
-    private generateCacheKey(contexto: BthContext): string {
-        return `${contexto.database}:${contexto.entity}:${contexto.system}`;
+    private generateCacheKey(context: BthContext): string {
+        return `${context.database}:${context.entity}:${context.system}`;
     }
 }
