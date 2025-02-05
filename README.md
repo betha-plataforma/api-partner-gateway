@@ -89,3 +89,10 @@ npm run test
 ---
 
 Para mais detalhes ou suporte, entre em contato com a equipe responsável.
+
+# TODO:
+
+- [ ] Traduzir mensagens de erro para portugues
+- [ ] Validar a configuração do env para não chumbar coisas no src/config/index.ts
+- [ ] Criar um diagrama de sequencia definitivo
+- [ ] 
