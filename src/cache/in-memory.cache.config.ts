@@ -12,7 +12,7 @@ class InMemoryCacheConfig {
      */
     private static createInstance(): NodeCache {
         const cacheTTL = config.cache.inMemory.ttlSeconds;
-        assert(cacheTTL, 'IN_MEMORY_CACHE_TTL environment variable is required.');
+        assert(cacheTTL, 'Variavel de ambiente IN_MEMORY_CACHE_TTL e obrigatoria.');
         return new NodeCache({
             stdTTL: cacheTTL
         });
@@ -39,7 +39,7 @@ class InMemoryCacheConfig {
         if (!InMemoryCacheConfig.instance) {
             console.error(
                 InMemoryCacheConfig.instance,
-                'In memory cache instance has not been initialized. Initializing...'
+                'A instancia do cache em memoria nao foi inicializada. Inicializando...'
             );
             InMemoryCacheConfig.instance = InMemoryCacheConfig.createInstance();
         }

@@ -102,7 +102,7 @@ describe('Gateway routes', () => {
         expect(res.status).toHaveBeenCalledWith(500);
         expect(res.json).toHaveBeenCalledWith({
             error: new Error('Unexpected server error'),
-            message: 'Internal server error'
+            message: 'Erro interno do servidor'
         });
     });
 });

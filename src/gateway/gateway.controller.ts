@@ -49,7 +49,7 @@ class GatewayController {
                 res.status(error.statusCode).json({ error: error });
             } else {
                 console.error(error);
-                res.status(500).json({ message: 'Internal server error', error: error });
+                res.status(500).json({ message: 'Erro interno do servidor', error: error });
             }
         }
     }
@@ -61,14 +61,14 @@ class GatewayController {
      * @throws {GatewayValidationException} If the token is invalid.
      */
     private async verifyJwtToken(req: Request): Promise<void> {
-        await check(AppConstants.BTH_GATEWAY_ID_HEADER, 'Invalid JWT token')
+        await check(AppConstants.BTH_GATEWAY_ID_HEADER, 'Token JWT invalido')
             .exists()
             .isJWT()
             .run(req);
 
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            throw new GatewayValidationException('Validation failed', errors.array());
+            throw new GatewayValidationException('Validacao falhou', errors.array());
         }
     }
 

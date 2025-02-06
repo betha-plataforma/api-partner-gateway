@@ -29,7 +29,7 @@ describe('Partner Mock routes', () => {
             .set('Authorization', 'Bearer access-token-to-application1');
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
-            message: 'Welcome to Application 1'
+            message: 'Bem vindo a Aplicacao 1'
         });
     });
 });

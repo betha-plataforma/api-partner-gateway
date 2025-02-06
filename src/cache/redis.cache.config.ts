@@ -11,13 +11,13 @@ export const getRedisClient = (): RedisClientType => {
         });
 
         redisClient.on('error', (err) => {
-            throw new Error(`Redis Error: ${err}`);
+            throw new Error(`Erro no Redis: ${err}`);
         });
 
         redisClient.connect().catch((err) => {
-            throw new Error(`Failed to connect to Redis: ${err}`);
+            throw new Error(`Falha ao conectar no Redis: ${err}`);
         });
     }
-    assert(redisClient, 'Failed to initialize Redis client');
+    assert(redisClient, 'Falha ao inicializar o cliente Redis');
     return redisClient;
 };

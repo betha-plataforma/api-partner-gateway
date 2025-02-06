@@ -27,7 +27,7 @@ router.use('/partner/application1', (req: Request, res: Response): void => {
     }
 
     res.status(200).json({
-        message: 'Welcome to Application 1'
+        message: 'Bem vindo a Aplicacao 1'
     });
 });
 

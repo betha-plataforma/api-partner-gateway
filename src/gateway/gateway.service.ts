@@ -20,9 +20,9 @@ class GatewayService {
         const { jwksUri } = config.jwt;
         const jwksCacheAge = config.jwt.cache.ageMs;
         const jwksCacheMaxEntries = config.jwt.cache.maxEntries;
-        assert(jwksUri, 'ENV JWKS_URI is not defined');
-        assert(jwksCacheAge, 'ENV JWKS_CACHE_AGE is not defined');
-        assert(jwksCacheMaxEntries, 'ENV JWKS_CACHE_MAX_ENTRIES is not defined');
+        assert(jwksUri, 'ENV JWKS_URI nao esta definido');
+        assert(jwksCacheAge, 'ENV JWKS_CACHE_AGE nao esta definido');
+        assert(jwksCacheMaxEntries, 'ENV JWKS_CACHE_MAX_ENTRIES nao esta definido');
 
         this.jwksClient = jwksRsa({
             jwksUri,
@@ -61,7 +61,7 @@ class GatewayService {
 
         assert(
             decodedHeader?.header.kid,
-            new InvalidTokenException('Token header is missing the key ID')
+            new InvalidTokenException('O header do token está sem a propriedade kid')
         );
 
         const signingKey = await this.getJwksSigningKey(decodedHeader.header.kid);
@@ -70,7 +70,7 @@ class GatewayService {
             return jwt.verify(token, signingKey, { algorithms: ['RS256'] }) as JwtPayload;
         } catch (error) {
             if (error instanceof jwt.TokenExpiredError) {
-                throw new InvalidTokenException('JWT validation failed: Token has expired', error);
+                throw new InvalidTokenException('Falha na validacao do JWT: Token expirou', error);
             }
             throw error;
         }
