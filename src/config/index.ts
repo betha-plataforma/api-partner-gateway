@@ -2,7 +2,10 @@ import { Config } from './types.js';
 import dotenv from 'dotenv';
 
 // Carrega as variáveis de ambiente do arquivo .env
-dotenv.config();
+const result = dotenv.config();
+if (result.error) {
+    console.log('\t.env nao encontrado, usando development!\n');
+}
 
 const configs: Record<string, Config> = {
     // Se não haver .env no projeto, use valores padrão para as variáveis de ambiente
@@ -81,11 +84,7 @@ const configs: Record<string, Config> = {
     }
 };
 
-const environment = process.env.NODE_ENV || 'development';
-const config: Config = configs[environment];
-
-if (!config) {
-    throw new Error(`Configuration not found for environment: ${environment}`);
-}
+const environment = (process.env.NODE_ENV || 'development') as keyof typeof configs;
+const config: Config = configs[environment] || configs.development;
 
 export default config;

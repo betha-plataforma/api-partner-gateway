@@ -6,11 +6,11 @@ import app from './app.js';
  */
 const server = app.listen(config.port, () => {
     console.log(
-        '  App is running at http://localhost:%d in %s mode',
+        '\tApp is running at http://localhost:%d in %s mode',
         config.port,
         process.env.NODE_ENV
     );
-    console.log('  Press CTRL-C to stop\n');
+    console.log('\tPress CTRL-C to stop\n');
 });
 
 export default server;
