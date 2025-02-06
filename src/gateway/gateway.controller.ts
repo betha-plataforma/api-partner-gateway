@@ -46,9 +46,10 @@ class GatewayController {
                 error instanceof GatewayValidationException ||
                 error instanceof InvalidTokenException
             ) {
-                res.status(error.statusCode).json({ error });
+                res.status(error.statusCode).json({ error: error });
             } else {
-                res.status(500).json({ message: 'Internal server error' });
+                console.error(error);
+                res.status(500).json({ message: 'Internal server error', error: error });
             }
         }
     }

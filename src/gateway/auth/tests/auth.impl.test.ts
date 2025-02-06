@@ -2,7 +2,6 @@ import { AuthImpl } from '../auth.impl.js';
 import { BthContext } from '../../gateway.interfaces.js';
 import { AuthCredentials } from '../auth.interfaces.js';
 import { AuthImplException, AuthImplRequestException } from '../auth.errors.js';
-import config from '../../../config/index.js';
 
 describe('AuthImpl', () => {
     let authImpl: AuthImpl;
@@ -11,10 +10,6 @@ describe('AuthImpl', () => {
     beforeEach(() => {
         fetchSpy = jest.spyOn(globalThis, 'fetch');
         authImpl = new AuthImpl();
-
-        Object.defineProperty(config.cache.redis, 'enabled', {
-            get: () => false
-        });
     });
 
     afterEach(() => {

@@ -39,7 +39,7 @@ class AuthImpl implements AuthProvider {
             throw new AuthImplException('Ocorreu um erro inesperado', error);
         }
 
-        assert(response.ok, new AuthImplRequestException(response.statusText));
+        assert(response.ok, new AuthImplRequestException(response.statusText, response));
 
         return await this.parseResponseToCredentials(response);
     }

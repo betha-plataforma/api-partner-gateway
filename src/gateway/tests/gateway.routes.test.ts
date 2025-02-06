@@ -100,6 +100,9 @@ describe('Gateway routes', () => {
         await controller.auth(req as Request, res as Response, jest.fn());
 
         expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.json).toHaveBeenCalledWith({ message: 'Internal server error' });
+        expect(res.json).toHaveBeenCalledWith({
+            error: new Error('Unexpected server error'),
+            message: 'Internal server error'
+        });
     });
 });
