@@ -1,55 +1,12 @@
 import { Config } from './types.js';
+import dotenv from 'dotenv';
+
+// Carrega as variáveis de ambiente do arquivo .env
+dotenv.config();
 
 const configs: Record<string, Config> = {
+    // Se não haver .env no projeto, use valores padrão para as variáveis de ambiente
     development: {
-        port: 3000,
-        jwt: {
-            jwksUri: 'https://plataforma-authentication-jwks.test.betha.cloud/api/v1/keys',
-            cache: {
-                maxEntries: 3,
-                ageMs: 14400000 // 4 hours
-            }
-        },
-        cache: {
-            inMemory: {
-                ttlSeconds: 3600
-            },
-            redis: {
-                enabled: false,
-                url: 'redis://localhost:6379',
-                ttl: '1 day'
-            }
-        },
-        auth: {
-            uri: 'http://localhost:3000/mock/partner/auth'
-        }
-    },
-
-    test: {
-        port: 3000,
-        jwt: {
-            jwksUri: 'https://plataforma-authentication-jwks.test.betha.cloud/api/v1/keys',
-            cache: {
-                maxEntries: 3,
-                ageMs: 14400000
-            }
-        },
-        cache: {
-            inMemory: {
-                ttlSeconds: 3600
-            },
-            redis: {
-                enabled: false,
-                url: 'redis://localhost:6379',
-                ttl: '1 day'
-            }
-        },
-        auth: {
-            uri: 'http://localhost:3000/mock/partner/auth'
-        }
-    },
-
-    production: {
         port: Number(process.env.PORT) || 3000,
         jwt: {
             jwksUri:
@@ -72,6 +29,54 @@ const configs: Record<string, Config> = {
         },
         auth: {
             uri: process.env.AUTH_URI || 'http://localhost:3000/mock/partner/auth'
+        }
+    },
+
+    test: {
+        port: Number(process.env.PORT),
+        jwt: {
+            jwksUri: process.env.JWKS_URI,
+            cache: {
+                maxEntries: Number(process.env.JWKS_CACHE_MAX_ENTRIES),
+                ageMs: Number(process.env.JWKS_CACHE_AGE)
+            }
+        },
+        cache: {
+            inMemory: {
+                ttlSeconds: Number(process.env.IN_MEMORY_CACHE_TTL)
+            },
+            redis: {
+                enabled: process.env.USE_REDIS === 'true',
+                url: process.env.REDIS_URL,
+                ttl: process.env.CACHE_REDIS_TTL
+            }
+        },
+        auth: {
+            uri: process.env.AUTH_URI
+        }
+    },
+
+    production: {
+        port: Number(process.env.PORT),
+        jwt: {
+            jwksUri: process.env.JWKS_URI,
+            cache: {
+                maxEntries: Number(process.env.JWKS_CACHE_MAX_ENTRIES),
+                ageMs: Number(process.env.JWKS_CACHE_AGE)
+            }
+        },
+        cache: {
+            inMemory: {
+                ttlSeconds: Number(process.env.IN_MEMORY_CACHE_TTL)
+            },
+            redis: {
+                enabled: process.env.USE_REDIS === 'true',
+                url: process.env.REDIS_URL,
+                ttl: process.env.CACHE_REDIS_TTL
+            }
+        },
+        auth: {
+            uri: process.env.AUTH_URI
         }
     }
 };

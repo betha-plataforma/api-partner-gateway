@@ -1,23 +1,23 @@
 export interface Config {
-    port: number;
+    port?: number;
     jwt: {
-        jwksUri: string;
+        jwksUri?: string;
         cache: {
-            maxEntries: number;
-            ageMs: number;
+            maxEntries?: number;
+            ageMs?: number;
         };
     };
     cache: {
         inMemory: {
-            ttlSeconds: number;
+            ttlSeconds?: number;
         };
         redis: {
-            enabled: boolean;
-            url: string;
-            ttl: string;
+            enabled?: boolean;
+            url?: string;
+            ttl?: string;
         };
     };
     auth: {
-        uri: string;
+        uri?: string;
     };
 }
