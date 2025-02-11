@@ -6,10 +6,6 @@ import config from './config/index.js';
 
 const app: Application = express();
 
-// Express configuration
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
 // API routes
 app.use('/partner-gateway/v1', gatewayRoutes);
 
