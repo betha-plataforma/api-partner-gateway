@@ -5,16 +5,12 @@ import { CacheProvider } from './cache.provider.js';
  * Implementation of the CacheProvider interface using Redis as the caching mechanism.
  */
 class RedisCache implements CacheProvider {
-    private redisClient: RedisClientType;
-
     /**
      * Initializes a new instance of the RedisCache class.
      * Sets up the Redis client connection.
      * @throws Will throw an error if the Redis client fails to initialize.
      */
-    constructor(client: RedisClientType) {
-        this.redisClient = client;
-    }
+    constructor(private redisClient: RedisClientType) {}
 
     /**
      * Retrieves a value from the cache by its key.

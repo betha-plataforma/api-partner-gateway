@@ -13,18 +13,15 @@ import { AuthProvider } from './auth/auth.provider.js';
  * @param gatewayService The gateway service.
  */
 class GatewayController {
-    private gatewayService: GatewayService;
-    private authImpl: AuthProvider;
-
     /**
      * Constructor for the GatewayController class.
      *
      * @param gatewayService The gateway service.
      */
-    constructor(gatewayService: GatewayService, authImpl: AuthProvider) {
-        this.gatewayService = gatewayService;
-        this.authImpl = authImpl;
-    }
+    constructor(
+        private readonly gatewayService: GatewayService,
+        private readonly authImpl: AuthProvider
+    ) {}
 
     /**
      * Authenticates the incoming request by verifying the JWT token and applying auth credentials.
