@@ -93,7 +93,7 @@ class GatewayController {
      */
     private proxyRequest(req: Request, res: Response, next: any, uriRedirect: string): void {
         httpProxy(uriRedirect, {
-            proxyReqPathResolver: () => uriRedirect
+            proxyReqPathResolver: () => req.originalUrl
         })(req, res, next);
     }
 }

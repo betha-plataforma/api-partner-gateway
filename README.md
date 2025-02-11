@@ -7,6 +7,7 @@
     - [**Visão Geral**](#visão-geral)
     - [**Funcionamento Geral**](#funcionamento-geral)
         - [**Diagrama de Sequência**](#diagrama-de-sequência)
+    - [**Exemplo de funcionamento**](#exemplo-de-funcionamento)
     - [**Uso pelo parceiro**](#uso-pelo-parceiro)
     - [**Execução**](#execução)
         - [**Requisitos**](#requisitos)
@@ -35,6 +36,16 @@ O projeto **api-partner-gateway** é uma aplicação **Node.js** que atua como u
 ### **Diagrama de Sequência**
 
 ![Diagrama de Sequência](docs/diagrama-de-sequencia.png)
+
+---
+
+## **Exemplo de funcionamento**
+
+Neste projeto, existe outra aplicação configurada como mock para demonstrar a utilização do serviço de gateway. A sua definição se encontra em `./partner-mock-application`. Ela disponibiliza um endpoint para autenticação e para simular uma aplicação genérica do parceiro.
+
+Ao executar ambas aplicações (gateway e mock), é possível realizar uma requisição para o gateway em qualquer path (localhost:3000) e ele irá redirecionar a requisição para a aplicação mock (localhost:3001), anexando as credenciais de autenticação obtidas no processo de autenticação.
+
+Ao retornar a requisicão, a aplicação mock irá retornar o status da requisição e os dados recebidos.
 
 ---
 

@@ -1,12 +1,5 @@
 {
-    "exclude": [
-        "./partner-mock-application",
-        "./coverage",
-        "./dist",
-        "jest.config.ts",
-        "babel.config.js",
-        "eslint.config.js"
-    ],
+    "exclude": [],
     "ts-node": {
         "esm": true,
         "experimentalSpecifier": true,
@@ -16,9 +9,8 @@
         "target": "ESNext",
         "module": "NodeNext",
         "moduleResolution": "NodeNext",
-        "rootDir": "./src",
+        "rootDir": ".",
         "checkJs": true,
-        "outDir": "./dist",
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
         "strict": true,

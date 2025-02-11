@@ -9,7 +9,7 @@ const router = Router();
 /**
  * Routes for the gateway
  */
-router.use('/auth', (req: Request, res: Response, next: any) =>
+router.all('*', (req: Request, res: Response, next: any) =>
     new GatewayController(new GatewayService(), new CachingAuthProvider(new AuthImpl())).auth(
         req,
         res,

@@ -31,7 +31,7 @@ const configs: Record<string, Config> = {
             }
         },
         auth: {
-            uri: process.env.AUTH_URI || 'http://localhost:3000/mock/partner/auth'
+            uri: process.env.AUTH_URI || 'http://localhost:3001/auth'
         }
     },
 
