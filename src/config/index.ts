@@ -84,7 +84,7 @@ const configs: Record<string, Config> = {
     }
 };
 
-const environment = (process.env.NODE_ENV || 'development') as keyof typeof configs;
+const environment = process.env.NODE_ENV ?? 'development';
 const config: Config = configs[environment] || configs.development;
 
 export default config;

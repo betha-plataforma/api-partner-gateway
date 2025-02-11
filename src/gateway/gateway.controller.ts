@@ -46,7 +46,7 @@ class GatewayController {
                 res.status(error.statusCode).json({ error: error });
             } else {
                 console.error(error);
-                res.status(500).json({ message: 'Erro interno do servidor', error: error });
+                res.status(500).json({ message: 'Erro interno do servidor' });
             }
         }
     }

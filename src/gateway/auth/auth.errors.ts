@@ -8,10 +8,7 @@ export class AuthImplRequestException extends Error {
 }
 
 export class AuthImplException extends Error {
-    public errors?: any;
-
-    constructor(message: string, errors?: any) {
-        super(message);
-        this.errors = errors;
+    constructor(message: string, error?: any) {
+        super(message, error);
     }
 }
