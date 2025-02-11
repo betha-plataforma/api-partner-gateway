@@ -22,7 +22,8 @@ const configs: Record<string, Config> = {
         },
         cache: {
             inMemory: {
-                ttlSeconds: Number(process.env.IN_MEMORY_CACHE_TTL) || 3600
+                ttlSeconds: Number(process.env.IN_MEMORY_CACHE_TTL) || 3600,
+                maxKeys: Number(process.env.IN_MEMORY_CACHE_MAX_KEYS) || 1000
             },
             redis: {
                 enabled: process.env.USE_REDIS === 'true',
@@ -46,7 +47,8 @@ const configs: Record<string, Config> = {
         },
         cache: {
             inMemory: {
-                ttlSeconds: Number(process.env.IN_MEMORY_CACHE_TTL)
+                ttlSeconds: Number(process.env.IN_MEMORY_CACHE_TTL),
+                maxKeys: Number(process.env.IN_MEMORY_CACHE_MAX_KEYS)
             },
             redis: {
                 enabled: process.env.USE_REDIS === 'true',
@@ -70,7 +72,8 @@ const configs: Record<string, Config> = {
         },
         cache: {
             inMemory: {
-                ttlSeconds: Number(process.env.IN_MEMORY_CACHE_TTL)
+                ttlSeconds: Number(process.env.IN_MEMORY_CACHE_TTL),
+                maxKeys: Number(process.env.IN_MEMORY_CACHE_MAX_KEYS)
             },
             redis: {
                 enabled: process.env.USE_REDIS === 'true',

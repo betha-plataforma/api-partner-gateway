@@ -10,6 +10,7 @@ export interface Config {
     cache: {
         inMemory: {
             ttlSeconds?: number;
+            maxKeys?: number;
         };
         redis: {
             enabled?: boolean;

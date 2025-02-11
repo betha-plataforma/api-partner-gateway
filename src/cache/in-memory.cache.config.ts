@@ -12,9 +12,12 @@ class InMemoryCacheConfig {
      */
     private static createInstance(): NodeCache {
         const cacheTTL = config.cache.inMemory.ttlSeconds;
+        const cacheMaxKeys = config.cache.inMemory.maxKeys;
         assert(cacheTTL, 'Variavel de ambiente IN_MEMORY_CACHE_TTL e obrigatoria.');
+        assert(cacheMaxKeys, 'Variavel de ambiente IN_MEMORY_CACHE_MAX_KEYS e obrigatoria.');
         return new NodeCache({
-            stdTTL: cacheTTL
+            stdTTL: cacheTTL,
+            maxKeys: config.cache.inMemory.maxKeys
         });
     }
 
@@ -23,8 +26,8 @@ class InMemoryCacheConfig {
      * This method ensures that the application uses NodeCache only when Redis is not configured as the cache provider.
      */
     public static setup(): void {
-        const useNodeCache = config.cache.redis.enabled;
-        if (!useNodeCache && !InMemoryCacheConfig.instance) {
+        const useRedis = config.cache.redis.enabled;
+        if (!useRedis && !InMemoryCacheConfig.instance) {
             InMemoryCacheConfig.instance = InMemoryCacheConfig.createInstance();
         }
     }
@@ -37,10 +40,6 @@ class InMemoryCacheConfig {
      */
     public static getInstance(): NodeCache {
         if (!InMemoryCacheConfig.instance) {
-            console.error(
-                InMemoryCacheConfig.instance,
-                'A instancia do cache em memoria nao foi inicializada. Inicializando...'
-            );
             InMemoryCacheConfig.instance = InMemoryCacheConfig.createInstance();
         }
         return InMemoryCacheConfig.instance;
