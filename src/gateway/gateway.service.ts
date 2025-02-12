@@ -43,9 +43,9 @@ class GatewayService {
         const jwtPayload = (await this.getJwtPayload(token)) as BthJwtPayload;
 
         return {
-            database: jwtPayload.client.attributes.database,
-            entity: jwtPayload.client.attributes.entidade,
-            system: jwtPayload.client.attributes.sistema
+            database: jwtPayload.user.access.databaseId,
+            entity: jwtPayload.user.access.entityId,
+            system: jwtPayload.user.access.systemId
         };
     }
 

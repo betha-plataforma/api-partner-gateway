@@ -13,12 +13,12 @@ export interface BthJwtPayload {
     };
     user: {
         id: string;
-        accesses: Array<{
+        access: {
             systemId: string;
             entityId: string;
             databaseId: string;
             userId: string;
-        }>;
+        };
     };
     expiresIn: number;
     iss: string;
