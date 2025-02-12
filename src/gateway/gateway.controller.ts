@@ -1,6 +1,6 @@
 import httpProxy from 'express-http-proxy';
 import { Request, Response } from 'express';
-import { check, validationResult } from 'express-validator';
+import { header, validationResult } from 'express-validator';
 import { GatewayService } from './gateway.service.js';
 import AppConstants from '../app-constants.js';
 import { AuthCredentials } from './auth/auth.interfaces.js';
@@ -58,7 +58,7 @@ class GatewayController {
      * @throws {GatewayValidationException} If the token is invalid.
      */
     private async verifyJwtToken(req: Request): Promise<void> {
-        await check(AppConstants.BTH_GATEWAY_ID_HEADER, 'Token JWT invalido')
+        await header(AppConstants.BTH_GATEWAY_ID_HEADER, 'Token JWT invalido')
             .exists()
             .isJWT()
             .run(req);
