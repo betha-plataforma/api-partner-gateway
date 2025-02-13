@@ -15,7 +15,7 @@ export class GatewayValidationException extends Error {
 
     constructor(message: string, errors?: any) {
         super(message);
-        this.statusCode = 422;
+        this.statusCode = 401;
         this.errors = errors;
     }
 }

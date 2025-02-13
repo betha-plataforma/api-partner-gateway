@@ -1,19 +1,16 @@
-import apicache from 'apicache';
-import { Router, Request, Response } from 'express';
-import { GatewayController } from './gateway.controller';
-import { GatewayService } from './gateway.service';
-import { PartnerService } from './partner/partner.service';
-import { getRedisClient } from '../redis-config';
+import { Request, Response, Router } from 'express';
+import { GatewayController } from './gateway.controller.js';
+import { GatewayService } from './gateway.service.js';
+import { AuthImpl } from './auth/auth.impl.js';
+import { CachingAuthProvider } from './auth/auth.cache.decorator.js';
 
 const router = Router();
-const cacheWithRedis = apicache.options({ redisClient: getRedisClient() }).middleware;
+const gatewayService = new GatewayService();
+const authProvider = new CachingAuthProvider(new AuthImpl());
+const gatewayController = new GatewayController(gatewayService, authProvider);
 
 /**
  * Routes for the gateway
  */
-router.use(
-    '/auth',
-    /*cacheWithRedis('1 day'),*/ (req: Request, res: Response, next: any) =>
-        new GatewayController(new GatewayService(new PartnerService())).auth(req, res, next)
-);
+router.all('*', (req: Request, res: Response, next: any) => gatewayController.auth(req, res, next));
 export { router };

@@ -1,12 +1,14 @@
 import jwt from 'jsonwebtoken';
-import { GatewayController } from '../gateway.controller';
-import { jest } from '@jest/globals';
-import { GatewayService } from '../gateway.service';
 import { Request, Response } from 'express';
+import { jest } from '@jest/globals';
+import { GatewayController } from '../gateway.controller.js';
+import { GatewayService } from '../gateway.service.js';
+import { AuthImpl } from '../auth/auth.impl.js';
 
 describe('Gateway routes', () => {
     let secretKey: string;
     let mockGatewayService: jest.Mocked<GatewayService>;
+    let mockAuthImpl: jest.Mocked<AuthImpl>;
     let req: Partial<Request>;
     let res: Partial<Response>;
     let controller: GatewayController;
@@ -17,18 +19,12 @@ describe('Gateway routes', () => {
 
     beforeEach(() => {
         mockGatewayService = {
-            auth: jest.fn()
+            getContext: jest.fn()
         } as unknown as jest.Mocked<GatewayService>;
 
-        jest.spyOn(GatewayService.prototype, 'auth').mockImplementation(async () => {
-            return {
-                uriRedirect: 'mockUriRedirect',
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            };
-        });
+        mockAuthImpl = {
+            auth: jest.fn()
+        } as unknown as jest.Mocked<AuthImpl>;
 
         req = {
             headers: {}
@@ -40,7 +36,7 @@ describe('Gateway routes', () => {
             json: jest.fn()
         } as unknown as Partial<Response>;
 
-        controller = new GatewayController(mockGatewayService);
+        controller = new GatewayController(mockGatewayService, mockAuthImpl);
     });
 
     afterEach(() => {
@@ -53,17 +49,27 @@ describe('Gateway routes', () => {
 
         req.headers = { 'x-bth-gateway-id': token };
 
-        mockGatewayService.auth.mockResolvedValueOnce({
-            uriRedirect: 'mockUriRedirect',
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
+        jest.spyOn(GatewayService.prototype, 'getContext').mockImplementation(async () => {
+            return {
+                database: '1',
+                entity: '1',
+                system: '1'
+            };
+        });
+
+        jest.spyOn(AuthImpl.prototype, 'auth').mockImplementation(async () => {
+            return {
+                uriRedirect: 'mockUriRedirect',
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            };
         });
 
         await controller.auth(req as Request, res as Response, jest.fn());
 
-        expect(mockGatewayService.auth).toHaveBeenCalledWith(token);
+        expect(mockGatewayService.getContext).toHaveBeenCalledWith(token);
     });
 
     test('should return 422 for an invalid token', async () => {
@@ -87,13 +93,16 @@ describe('Gateway routes', () => {
 
         req.headers = { 'x-bth-gateway-id': token };
 
-        mockGatewayService.auth.mockImplementationOnce(() => {
+        mockGatewayService.getContext.mockImplementationOnce(() => {
             throw new Error('Unexpected server error');
         });
 
         await controller.auth(req as Request, res as Response, jest.fn());
 
         expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.json).toHaveBeenCalledWith({ message: 'Internal server error' });
+        expect(res.json).toHaveBeenCalledWith({
+            error: new Error('Unexpected server error'),
+            message: 'Erro interno do servidor'
+        });
     });
 });
