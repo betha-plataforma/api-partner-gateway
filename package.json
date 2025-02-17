@@ -1,7 +1,7 @@
 {
   "name": "api-partner-gateway",
   "version": "1.0.0",
-  "description": "",
+  "description": "API Gateway para integração com parceiros Betha",
   "engines": {
     "npm": ">=10.0.0",
     "node": ">=22.0.0"
@@ -20,8 +20,11 @@
     "format": "prettier --write \"src/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\""
   },
-  "keywords": [],
-  "author": "",
+  "author": {
+    "name": "Plataforma Betha Cloud",
+    "email": "ti.plataforma@betha.com.br",
+    "url": "https://plataforma.betha.cloud/"
+  },
   "license": "MIT",
   "dependencies": {
     "dotenv": "^16.4.7",
