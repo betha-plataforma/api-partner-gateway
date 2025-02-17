@@ -28,7 +28,7 @@ O projeto **api-partner-gateway** é uma aplicação **Node.js** que atua como u
 ## **Funcionamento Geral**
 
 1. **Recebimento** de tráfego HTTP via o gateway da Betha, configurado no [Studio Aplicações](https://aplicacoes.studio.betha.cloud/).
-2. **Validação** do **JWT** no serviço de **JWKS** da Betha, para garantir a autenticidade do token.
+2. **Validação** do **JWT** no [serviço de **JWKS** da Betha](https://plataforma-authentication-jwks.betha.cloud/api/v1/keys), para garantir a autenticidade do token.
 3. **Autenticação** no serviço do parceiro, utilizando o contexto do JWT (entidade, sistema, e database). A classe responsável deve ser customizada conforme a necessidade do parceiro.
 4. **Redirecionamento** do tráfego para o sistema do parceiro, anexando as credenciais obtidas.
 5. **Cache** das requisições (tanto de autenticação quanto de validação do JWT) para garantir performance.
