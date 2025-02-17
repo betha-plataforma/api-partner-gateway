@@ -1,14 +1,14 @@
 import { Config } from './types.js';
 import dotenv from 'dotenv';
 
-// Carrega as variáveis de ambiente do arquivo .env
 const result = dotenv.config();
 if (result.error) {
     console.log('\t.env nao encontrado, usando development!\n');
 }
 
 const configs: Record<string, Config> = {
-    // Se não haver .env no projeto, use valores padrão para as variáveis de ambiente
+    // Se não haver .env no projeto, esses valores padrão serão utilizados
+    // para garantir execução imediata como exemplo
     development: {
         port: Number(process.env.PORT) || 3000,
         jwt: {

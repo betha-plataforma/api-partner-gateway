@@ -1,7 +1,7 @@
 {
   "name": "partner-mock-application",
   "version": "1.0.0",
-  "description": "",
+  "description": "Partner mock api para integração com o api partner gateway",
   "engines": {
     "npm": ">=10.0.0",
     "node": ">=22.0.0"
@@ -11,8 +11,11 @@
   "scripts": {
     "dev": "NODE_ENV=development tsx watch ./server.ts"
   },
-  "keywords": [],
-  "author": "",
+  "author": {
+    "name": "Plataforma Betha Cloud",
+    "email": "ti.plataforma@betha.com.br",
+    "url": "https://plataforma.betha.cloud/"
+  },
   "license": "MIT",
   "dependencies": {
     "express": "^4.21.2"
