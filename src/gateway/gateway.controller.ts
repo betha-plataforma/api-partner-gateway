@@ -43,10 +43,13 @@ class GatewayController {
                 error instanceof GatewayValidationException ||
                 error instanceof InvalidTokenException
             ) {
-                res.status(error.statusCode).json({ error: error });
+                res.status(error.statusCode).json({ error });
             } else {
                 console.error(error);
-                res.status(500).json({ message: 'Erro interno do servidor' });
+                res.status(500).json({ 
+                    error,
+                    message: 'Erro interno do servidor' 
+                });
             }
         }
     }
@@ -77,7 +80,7 @@ class GatewayController {
      */
     private applyAuthCredentialsToRequest(req: Request, credentials: AuthCredentials): void {
         req.headers = {
-            ...req.headers,
+            ...(req.headers || {}),
             ...credentials.headers
         };
         req.method = credentials.method;
