@@ -49,22 +49,18 @@ describe('Gateway routes', () => {
 
         req.headers = { 'x-bth-gateway-id': token };
 
-        jest.spyOn(GatewayService.prototype, 'getContext').mockImplementation(async () => {
-            return {
-                database: '1',
-                entity: '1',
-                system: '1'
-            };
+        mockGatewayService.getContext.mockResolvedValue({
+            database: '1',
+            entity: '1',
+            system: '1'
         });
 
-        jest.spyOn(AuthImpl.prototype, 'auth').mockImplementation(async () => {
-            return {
-                uriRedirect: 'mockUriRedirect',
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            };
+        mockAuthImpl.auth.mockResolvedValue({
+            uriRedirect: 'mockUriRedirect',
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
         });
 
         await controller.auth(req as Request, res as Response, jest.fn());
@@ -73,9 +69,7 @@ describe('Gateway routes', () => {
     });
 
     test('should return 422 for an invalid token', async () => {
-        if (req.headers) {
-            req.headers['x-bth-gateway-id'] = 'invalid-token';
-        }
+        req.headers = { 'x-bth-gateway-id': 'invalid-token' };
 
         await controller.auth(req as Request, res as Response, jest.fn());
 

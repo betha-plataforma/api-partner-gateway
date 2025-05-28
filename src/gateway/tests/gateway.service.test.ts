@@ -28,6 +28,13 @@ describe('GatewayService', () => {
                     entidade: '1',
                     sistema: '1'
                 }
+            },
+            user: {
+                access: {
+                    databaseId: '1',
+                    entityId: '1',
+                    systemId: '1'
+                }
             }
         };
 
@@ -45,9 +52,9 @@ describe('GatewayService', () => {
         const result = await gatewayService.getContext(token);
 
         expect(result).toEqual({
-            database: mockJwtPayload.client.attributes.database,
-            entity: mockJwtPayload.client.attributes.entidade,
-            system: mockJwtPayload.client.attributes.sistema
+            database: mockJwtPayload.user.access.databaseId,
+            entity: mockJwtPayload.user.access.entityId,
+            system: mockJwtPayload.user.access.systemId
         });
         expect(mockJwksClient.getSigningKey).toHaveBeenCalledWith('test-kid');
         expect(jwt.verify).toHaveBeenCalledWith(token, mockPublicKey, { algorithms: ['RS256'] });
